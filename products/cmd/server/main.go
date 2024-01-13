@@ -78,7 +78,7 @@ func (a *App) setLogLevel(w http.ResponseWriter, r *http.Request) {
 func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	// Write the JSON response
-	w.Write([]byte("hello"))
+	w.Write([]byte("hello, I am products service"))
 }
 
 func (a *App) getProductsListHandler(w http.ResponseWriter, r *http.Request) {
