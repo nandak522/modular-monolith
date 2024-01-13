@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	github.com/go-chi/chi/v5 v5.0.11
+	github.com/nandak522/modular-monolith/utils v0.0.0-20240113142605-1b7d3f3736df
 	github.com/spf13/viper v1.18.2
 )
 
