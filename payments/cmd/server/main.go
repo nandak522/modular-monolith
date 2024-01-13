@@ -24,6 +24,7 @@ import (
 
 type Config struct {
 	ServerPort            int    `mapstructure:"server_port"`
+	EnableServerAccessLog bool   `mapstructure:"enable_server_access_log"`
 	AppName               string `mapstructure:"app_name"`
 	LogLevel              string `mapstructure:"log_level"`
 	EnableDynamicLogLevel bool   `mapstructure:"enable_dynamic_log_level"`
@@ -112,9 +113,13 @@ func (a *App) handleError(w http.ResponseWriter, err error, statusCode int) {
 func (a *App) setupRouter() {
 	r := chi.NewRouter()
 
-	// Use middleware for basic logging and recovery
-	r.Use(middleware.Logger)
+	if a.Config.EnableServerAccessLog {
+		// Use middleware for basic logging
+		r.Use(middleware.Logger)
+	}
 	// r.Use(middleware.RequestID)
+
+	// Use middleware for recovery
 	r.Use(middleware.Recoverer)
 
 	// Add your routes here
