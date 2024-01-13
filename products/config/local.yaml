@@ -1,0 +1,4 @@
+server_port: 8000
+app_name: Products
+log_level: info
+enable_dynamic_log_level: "true"
