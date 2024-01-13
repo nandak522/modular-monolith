@@ -1,3 +1,4 @@
 server_port: 9000
 app_name: Payments
-log_level: debug
+log_level: info
+enable_dynamic_log_level: "true"
