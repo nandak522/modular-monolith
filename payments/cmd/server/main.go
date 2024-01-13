@@ -75,6 +75,12 @@ func (a *App) setLogLevel(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Log Level switched to %s", requiredLogLevel)
 }
 
+func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	// Write the JSON response
+	w.Write([]byte("hello"))
+}
+
 func (a *App) getPaymentInfoHandler(w http.ResponseWriter, r *http.Request) {
 	// Simulated payment information
 	paymentInfo := PaymentInfo{
@@ -112,6 +118,7 @@ func (a *App) setupRouter() {
 	r.Use(middleware.Recoverer)
 
 	// Add your routes here
+	r.Get("/", a.homePageHandler)
 	r.Get("/getPaymentInfo", a.getPaymentInfoHandler)
 	r.Get("/setLogLevel", a.setLogLevel)
 
