@@ -1,4 +1,4 @@
-server_port: 8000
+server_port: 8080
 enable_server_access_log: false
 app_name: Products
 log_level: info

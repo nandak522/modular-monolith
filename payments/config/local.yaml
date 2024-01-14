@@ -1,4 +1,4 @@
-server_port: 9000
+server_port: 9090
 enable_server_access_log: false
 app_name: Payments
 log_level: info
