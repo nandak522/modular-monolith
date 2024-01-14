@@ -43,6 +43,10 @@ type PaymentInfo struct {
 	Status        string  `json:"status"`
 }
 
+type HelloUniverseResponse struct {
+	Greeting string `json:"greeting"`
+}
+
 func getLogLevelFromString(requiredLogLevel string) (slog.Level, error) {
 	var level slog.Level
 	switch strings.ToUpper(requiredLogLevel) {
@@ -79,7 +83,23 @@ func (a *App) setLogLevel(w http.ResponseWriter, r *http.Request) {
 func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	// Write the JSON response
-	w.Write([]byte("hello, I am payments service"))
+	helloUniverseResponse := HelloUniverseResponse{
+		Greeting: "hello, I am payments service",
+	}
+	// w.Write([]byte("hello, I am payments service"))
+	// Convert paymentInfo to JSON
+	response, err := json.Marshal(helloUniverseResponse)
+	if err != nil {
+		a.handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	// Set response headers
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	// Write the JSON response
+	w.Write(response)
 }
 
 func (a *App) getPaymentInfoHandler(w http.ResponseWriter, r *http.Request) {
