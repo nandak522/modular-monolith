@@ -100,6 +100,13 @@ func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Write the JSON response
 	w.Write(response)
+	if contextId, isContextIDSet := r.Header["X-Context-Id"]; isContextIDSet {
+		if len(contextId) > 0 {
+			a.Logger.Debug(fmt.Sprintf("Computed Response for request with id %s", contextId[0]))
+		}
+	} else {
+		a.Logger.Debug("Computed Response")
+	}
 }
 
 func (a *App) getPaymentInfoHandler(w http.ResponseWriter, r *http.Request) {
@@ -123,6 +130,13 @@ func (a *App) getPaymentInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Write the JSON response
 	w.Write(response)
+	if contextId, isContextIDSet := r.Header["X-Context-Id"]; isContextIDSet {
+		if len(contextId) > 0 {
+			a.Logger.Debug(fmt.Sprintf("Computed Response for request with id %s", contextId[0]))
+		}
+	} else {
+		a.Logger.Debug("Computed Response")
+	}
 }
 
 func (a *App) handleError(w http.ResponseWriter, err error, statusCode int) {
