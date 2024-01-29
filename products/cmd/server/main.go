@@ -15,7 +15,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	utilsLogger "example.com/modular-monolith/utils/pkg/logger"
+	commonUtilsLogger "github.com/nandak522/modular-monolith/utils/pkg/logger"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -28,6 +28,7 @@ type Config struct {
 	EnableServerAccessLog bool   `mapstructure:"enable_server_access_log"`
 	AppName               string `mapstructure:"app_name"`
 	LogLevel              string `mapstructure:"log_level"`
+	EnableDynamicLogLevel bool   `mapstructure:"enable_dynamic_log_level"`
 }
 
 type App struct {
@@ -74,7 +75,7 @@ func (a *App) updateLogLevelDynamically(w http.ResponseWriter, r *http.Request) 
 	loggingHandler := a.Logger.Handler()
 	levelVar := new(slog.LevelVar) // INFO
 	levelVar.Set(level)
-	a.Logger = slog.New(utilsLogger.NewLevelHandler(levelVar, loggingHandler))
+	a.Logger = slog.New(commonUtilsLogger.NewLevelHandler(levelVar, loggingHandler))
 	a.Logger.Info("Log Level switched to " + requiredLogLevel)
 	fmt.Fprintf(w, "Log Level switched to %s", requiredLogLevel)
 }
@@ -117,7 +118,7 @@ func (a *App) getProductsListHandler(w http.ResponseWriter, r *http.Request) {
 	// Convert products to JSON
 	response, err := json.Marshal(products)
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		a.handleError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -129,10 +130,10 @@ func (a *App) getProductsListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 	if contextId, isContextIDSet := r.Header["X-Context-Id"]; isContextIDSet {
 		if len(contextId) > 0 {
-			a.Logger.Info(fmt.Sprintf("Computed Response for request with id %s", contextId[0]))
+			a.Logger.Debug(fmt.Sprintf("Computed Response for request with id %s", contextId[0]))
 		}
 	} else {
-		a.Logger.Info("Computed Response")
+		a.Logger.Debug("Computed Response")
 	}
 }
 
