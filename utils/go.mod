@@ -1,3 +1,3 @@
-module github.com/nandak522/modular-monolith/utils
+module modular-monolith/utils
 
 go 1.21

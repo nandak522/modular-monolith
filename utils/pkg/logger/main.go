@@ -16,6 +16,7 @@ type LevelHandler struct {
 
 // NewLevelHandler returns a LevelHandler with the given level.
 // All methods except Enabled delegate to h.
+// Pulled from golang src log/slog/example_level_handler_test.go
 func NewLevelHandler(level slog.Leveler, h slog.Handler) *LevelHandler {
 	// Optimization: avoid chains of LevelHandlers.
 	if lh, ok := h.(*LevelHandler); ok {
