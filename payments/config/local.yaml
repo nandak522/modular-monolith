@@ -1,5 +1,4 @@
 server_port: 9090
-enable_server_access_log: true
 app_name: Payments
 log_level: debug
-enable_dynamic_log_level: true
+enable_server_access_log: true

@@ -15,9 +15,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	utilsLogger "example.com/modular-monolith/utils/pkg/logger"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	utilsLogger "github.com/nandak522/modular-monolith/utils/pkg/logger"
 
 	"github.com/spf13/viper"
 )
@@ -27,7 +28,6 @@ type Config struct {
 	EnableServerAccessLog bool   `mapstructure:"enable_server_access_log"`
 	AppName               string `mapstructure:"app_name"`
 	LogLevel              string `mapstructure:"log_level"`
-	EnableDynamicLogLevel bool   `mapstructure:"enable_dynamic_log_level"`
 }
 
 type App struct {
@@ -64,11 +64,7 @@ func getLogLevelFromString(requiredLogLevel string) (slog.Level, error) {
 	return level, nil
 }
 
-func (a *App) setLogLevel(w http.ResponseWriter, r *http.Request) {
-	if !a.Config.EnableDynamicLogLevel {
-		http.Error(w, "Log Level can't be switched dynamically", http.StatusBadRequest)
-		return
-	}
+func (a *App) updateLogLevelDynamically(w http.ResponseWriter, r *http.Request) {
 	requiredLogLevel := r.URL.Query().Get("level")
 	level, err := getLogLevelFromString(requiredLogLevel)
 	if err != nil {
@@ -76,17 +72,17 @@ func (a *App) setLogLevel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	loggingHandler := a.Logger.Handler()
-	a.Logger = slog.New(utilsLogger.NewLevelHandler(level, loggingHandler))
+	levelVar := new(slog.LevelVar) // INFO
+	levelVar.Set(level)
+	a.Logger = slog.New(utilsLogger.NewLevelHandler(levelVar, loggingHandler))
 	fmt.Fprintf(w, "Log Level switched to %s", requiredLogLevel)
 }
 
 func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
 	// Write the JSON response
 	helloUniverseResponse := HelloUniverseResponse{
 		Greeting: "hello, I am products service",
 	}
-	// w.Write([]byte("hello, I am payments service"))
 	// Convert paymentInfo to JSON
 	response, err := json.Marshal(helloUniverseResponse)
 	if err != nil {
@@ -100,6 +96,13 @@ func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Write the JSON response
 	w.Write(response)
+	if contextId, isContextIDSet := r.Header["X-Context-Id"]; isContextIDSet {
+		if len(contextId) > 0 {
+			a.Logger.Debug(fmt.Sprintf("Computed Response for request with id %s", contextId[0]))
+		}
+	} else {
+		a.Logger.Debug("Computed Response")
+	}
 }
 
 func (a *App) getProductsListHandler(w http.ResponseWriter, r *http.Request) {
@@ -152,7 +155,7 @@ func (a *App) setupRouter() {
 	// Add your routes here
 	r.Get("/", a.homePageHandler)
 	r.Get("/products", a.getProductsListHandler)
-	r.Get("/setLogLevel", a.setLogLevel)
+	r.Get("/setLogLevel", a.updateLogLevelDynamically)
 
 	a.Router = r
 }
@@ -176,28 +179,18 @@ func (a *App) handleShutdown() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
+	a.Logger.Debug("Waiting for the signal to be received...")
 	// Block until a signal is received
 	sigReceived := <-signals
 
 	a.Logger.Debug(fmt.Sprintf("Received signal %v to shut down gracefully. Closing server...", sigReceived))
 
-	// Create a channel to wait for the shutdown to complete
-	done := make(chan struct{})
+	// Use a context with a timeout for graceful shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	go func() {
-		defer close(done)
-
-		if err := a.HTTPServer.Shutdown(context.TODO()); err != nil {
-			a.Logger.Error("Error during server shutdown:", err)
-		}
-	}()
-
-	// Wait for either the shutdown to complete or a timeout
-	select {
-	case <-done:
-		a.Logger.Debug("Server gracefully shut down.")
-	case <-time.After(10 * time.Second): // Adjust the timeout as needed
-		a.Logger.Debug("Server shutdown timed out. Forcing exit.")
+	if err := a.HTTPServer.Shutdown(ctx); err != nil {
+		a.Logger.Error("Error during server shutdown:", err)
 	}
 
 	// Exit the application
@@ -224,34 +217,33 @@ func main() {
 	configPath := flag.String("config", "config.yaml", "Path to the configuration file")
 	flag.Parse()
 
-	// Initialize logger
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-
-	if viper.GetBool("EnableDynamicLogLevel") {
-		logLevel := &slog.LevelVar{}
-		logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: logLevel,
-		}))
-	}
-	slog.SetDefault(logger)
-
 	// Create an instance of the App struct
 	app := &App{
-		Logger: logger,
 		Config: &Config{},
 	}
-
 	// Initialize configuration
 	app.initConfig(*configPath)
+
+	logLevel, err := getLogLevelFromString(app.Config.LogLevel)
+	if err != nil {
+		fmt.Println(err, " Resorting to INFO log-level.")
+		logLevel = slog.LevelInfo
+	}
+	levelVar := new(slog.LevelVar) // INFO
+	levelVar.Set(logLevel)
+	loggerOptions := &slog.HandlerOptions{
+		Level: levelVar,
+	}
+	app.Logger = slog.New(slog.NewJSONHandler(os.Stdout, loggerOptions))
+	slog.SetDefault(app.Logger)
+
+	app.Logger.Debug(fmt.Sprintf("Application Config: %+v", app.Config))
+
+	app.setupRouter()
+	app.setupHTTPServer()
 
 	// Set up graceful shutdown
 	go app.handleShutdown()
 
-	// Set up router and HTTP server
-	app.setupRouter()
-	app.setupHTTPServer()
-	go app.startHTTPServer()
-
-	// Wait for shutdown signal
-	select {}
+	app.startHTTPServer()
 }
