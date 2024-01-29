@@ -1,0 +1,40 @@
+name: Create Git Tag
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+    - '**/version.go'
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: ['products', 'payments']
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v4
+      continue-on-error: false
+
+    - name: Extract Version
+      if: contains(github.event.head_commit.modified, '${{ matrix.module }}/version.go')
+      id: extract-version
+      run: |
+        VERSION=`grep -E "MAJOR|MINOR|PATCH" version.go | cut -d '"' -f 2 | xargs echo -n | tr -s " " "."`
+        echo "::set-output name=VERSION::$VERSION"
+      working-directory: ${{ matrix.module }}
+
+    - name: Create Tag
+      uses: actions/github-script@v7
+      with:
+        github-token: "${{ github.token }}"
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: "refs/tags/${{ steps.extract-version.outputs.VERSION }}",
+            sha: context.sha
+          })
