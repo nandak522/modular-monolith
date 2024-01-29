@@ -75,6 +75,7 @@ func (a *App) updateLogLevelDynamically(w http.ResponseWriter, r *http.Request) 
 	levelVar := new(slog.LevelVar) // INFO
 	levelVar.Set(level)
 	a.Logger = slog.New(utilsLogger.NewLevelHandler(levelVar, loggingHandler))
+	a.Logger.Info("Log Level switched to " + requiredLogLevel)
 	fmt.Fprintf(w, "Log Level switched to %s", requiredLogLevel)
 }
 
