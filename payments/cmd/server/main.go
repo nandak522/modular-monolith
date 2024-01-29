@@ -15,7 +15,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	utilsLogger "example.com/modular-monolith/utils/pkg/logger"
+	commonUtilsLogger "github.com/nandak522/modular-monolith/utils/pkg/logger"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -75,7 +75,8 @@ func (a *App) updateLogLevelDynamically(w http.ResponseWriter, r *http.Request) 
 	loggingHandler := a.Logger.Handler()
 	levelVar := new(slog.LevelVar) // INFO
 	levelVar.Set(level)
-	a.Logger = slog.New(utilsLogger.NewLevelHandler(levelVar, loggingHandler))
+	a.Logger = slog.New(commonUtilsLogger.NewLevelHandler(levelVar, loggingHandler))
+	a.Logger.Info("Log Level switched to " + requiredLogLevel)
 	fmt.Fprintf(w, "Log Level switched to %s", requiredLogLevel)
 }
 
