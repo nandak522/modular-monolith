@@ -28,9 +28,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
     USER=appuser
 WORKDIR /app
 COPY --chown=${USER}:${USER} --from=builder /app/server .
+COPY --chown=${USER}:${USER} --from=builder /app/config .
 RUN chown -Rv ${USER}:${USER} /app
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends curl net-tools netcat-openbsd dnsutils && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 USER ${USER}:${USER}
-CMD ["/app/server", "-config=config/local.yaml"]
+CMD ["/app/server", "-config=/app/local.yaml"]
