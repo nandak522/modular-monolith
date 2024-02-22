@@ -6,12 +6,14 @@ deployments:
   - name: payments
     podLabels:
       app: payments
+      # prometheus.app/port: "9090"
+      # prometheus.app/scrape: "true"
     # containers is an array. Hence supports multiple containers.
     containers:
       - name: payments
         ports:
           - name: httpport
-            value: 8000
+            value: 9090
             servicePort: 80
             servicePortName: httpport
             nodePort: 32758
