@@ -1,0 +1,57 @@
+environment: worker
+namespace:
+  name: "payments"
+# deployments is an array. Hence supports multiple deployments.
+deployments:
+  - name: payments
+    podLabels:
+      app: payments
+    # containers is an array. Hence supports multiple containers.
+    containers:
+      - name: payments
+        ports:
+          - name: httpport
+            value: 8000
+            servicePort: 80
+            servicePortName: httpport
+            nodePort: 32758
+        # containerPortName: httpport
+        # containerPort: 8000
+        # internalServicePort: 80
+        # externalNodePort: 32758
+        # servicePortName: httpport
+        imageName: nanda/modular-monolith
+        imageTag: payments-0.1.1
+        configMapName: config-plain
+        configFileName: config-file
+        secretName: secrets-plain
+        secretsFileName: secrets-file
+        livenessProbe:
+          tcpSocket:
+            port: 8000
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          timeoutSeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+        env:
+          - name: "ADD_FUN"
+            value: "Yes"
+    rollingUpdate:
+      maxSurge: "30%"
+      maxUnavailable: "20%"
+    replicas: 1 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
+    # terminationGracePeriodSeconds: 60
+nodeLabels:
+  environment: worker
