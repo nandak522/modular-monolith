@@ -17,6 +17,9 @@ import (
 
 	commonUtilsLogger "github.com/nandak522/modular-monolith/utils/pkg/logger"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
@@ -47,6 +50,31 @@ type PaymentInfo struct {
 type HelloUniverseResponse struct {
 	Greeting string `json:"greeting"`
 }
+
+var (
+	httpRequests = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_requests_total",
+			Help: "Number of HTTP requests.",
+		},
+		[]string{"path"},
+	)
+	httpRequestErrors = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_request_errors_total",
+			Help: "Number of HTTP request errors.",
+		},
+		[]string{"path"},
+	)
+	httpRequestDuration = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_request_duration_seconds",
+			Help:    "Duration of HTTP requests.",
+			Buckets: prometheus.DefBuckets,
+		},
+		[]string{"path"},
+	)
+)
 
 func getLogLevelFromString(requiredLogLevel string) (slog.Level, error) {
 	var level slog.Level
@@ -81,6 +109,10 @@ func (a *App) updateLogLevelDynamically(w http.ResponseWriter, r *http.Request) 
 }
 
 func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
+	timer := prometheus.NewTimer(httpRequestDuration.WithLabelValues(r.URL.Path))
+	httpRequests.With(prometheus.Labels{"path": r.URL.Path}).Inc()
+
+	defer timer.ObserveDuration()
 	// Write the JSON response
 	helloUniverseResponse := HelloUniverseResponse{
 		Greeting: "hello, I am payments service",
@@ -89,6 +121,7 @@ func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
 	response, err := json.Marshal(helloUniverseResponse)
 	if err != nil {
 		a.handleError(w, err, http.StatusInternalServerError)
+		httpRequestErrors.With(prometheus.Labels{"path": r.URL.Path}).Inc()
 		return
 	}
 
@@ -142,6 +175,10 @@ func (a *App) handleError(w http.ResponseWriter, err error, statusCode int) {
 	http.Error(w, http.StatusText(statusCode), statusCode)
 }
 
+func (a *App) metricsHandler(w http.ResponseWriter, r *http.Request) {
+	promhttp.Handler().ServeHTTP(w, r)
+}
+
 func (a *App) setupRouter() {
 	r := chi.NewRouter()
 
@@ -158,6 +195,7 @@ func (a *App) setupRouter() {
 	r.Get("/", a.homePageHandler)
 	r.Get("/getPaymentInfo", a.getPaymentInfoHandler)
 	r.Get("/setLogLevel", a.updateLogLevelDynamically)
+	r.Get("/metrics", a.metricsHandler)
 
 	a.Router = r
 }
@@ -212,6 +250,7 @@ func (a *App) initConfig(configPath string) {
 		a.Logger.Error(fmt.Sprintf("Error unmarshalling config: %s\n", err))
 		os.Exit(1)
 	}
+	prometheus.MustRegister(httpRequests, httpRequestErrors, httpRequestDuration)
 }
 
 func main() {
