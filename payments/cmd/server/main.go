@@ -115,7 +115,7 @@ func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
 	defer timer.ObserveDuration()
 	// Write the JSON response
 	helloUniverseResponse := HelloUniverseResponse{
-		Greeting: "hello, I am payments service",
+		Greeting: "Hi - payments service",
 	}
 	// Convert paymentInfo to JSON
 	response, err := json.Marshal(helloUniverseResponse)

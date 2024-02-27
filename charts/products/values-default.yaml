@@ -13,10 +13,10 @@ deployments:
       - name: products
         ports:
           - name: httpport
-            value: 8000
+            value: 8080
             servicePort: 80
             servicePortName: httpport
-            nodePort: 32758
+            # nodePort: 32758
         # containerPortName: httpport
         # containerPort: 8000
         # internalServicePort: 80
@@ -30,12 +30,12 @@ deployments:
         secretsFileName: secrets-file
         livenessProbe:
           tcpSocket:
-            port: 8000
+            port: 8080
           periodSeconds: 5
         readinessProbe:
           httpGet:
             path: /
-            port: 8000
+            port: 8080
           timeoutSeconds: 10
           periodSeconds: 5
           successThreshold: 1
