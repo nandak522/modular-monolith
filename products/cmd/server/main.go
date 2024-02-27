@@ -109,14 +109,13 @@ func (a *App) updateLogLevelDynamically(w http.ResponseWriter, r *http.Request) 
 }
 
 func (a *App) homePageHandler(w http.ResponseWriter, r *http.Request) {
-
 	timer := prometheus.NewTimer(httpRequestDuration.WithLabelValues(r.URL.Path))
 	httpRequests.With(prometheus.Labels{"path": r.URL.Path}).Inc()
 
 	defer timer.ObserveDuration()
 	// Write the JSON response
 	helloUniverseResponse := HelloUniverseResponse{
-		Greeting: "hello, I am products service",
+		Greeting: "Hi - products service",
 	}
 	// Convert paymentInfo to JSON
 	response, err := json.Marshal(helloUniverseResponse)
