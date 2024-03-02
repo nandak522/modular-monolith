@@ -20,3 +20,9 @@
 # Application Binaries
 /products/server
 /payments/server
+
+# Ignore all files starting with 'values-'
+values-*
+
+# But do not ignore 'values-default.yaml'
+!values-default.yaml

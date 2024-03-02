@@ -15,7 +15,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	commonUtilsLogger "github.com/nandak522/modular-monolith/utils/pkg/logger"
+	sharedLogger "github.com/nandak522/modular-monolith/shared/logger"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -70,7 +70,7 @@ var (
 		prometheus.HistogramOpts{
 			Name:    "http_request_duration_seconds",
 			Help:    "Duration of HTTP requests.",
-			Buckets: prometheus.DefBuckets,
+			Buckets: []float64{.01, .1, 1, 10},
 		},
 		[]string{"path"},
 	)
@@ -103,7 +103,7 @@ func (a *App) updateLogLevelDynamically(w http.ResponseWriter, r *http.Request) 
 	loggingHandler := a.Logger.Handler()
 	levelVar := new(slog.LevelVar) // INFO
 	levelVar.Set(level)
-	a.Logger = slog.New(commonUtilsLogger.NewLevelHandler(levelVar, loggingHandler))
+	a.Logger = slog.New(sharedLogger.NewLevelHandler(levelVar, loggingHandler))
 	a.Logger.Info("Log Level switched to " + requiredLogLevel)
 	fmt.Fprintf(w, "Log Level switched to %s", requiredLogLevel)
 }
