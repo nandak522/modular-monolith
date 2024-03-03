@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	github.com/go-chi/chi/v5 v5.0.12
-	github.com/nandak522/modular-monolith/shared v0.0.0-20240221092251-9c9ca2105b74
+	github.com/nandak522/modular-monolith/shared v0.0.0-20240302164933-316b16cd2aba
 	github.com/spf13/viper v1.18.2
 )
 
