@@ -28,8 +28,8 @@ github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 h1:jWpvCLoY8Z/e3VKvls
 github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0/go.mod h1:QUyp042oQthUoa9bqDv0ER0wrtXnBruoNd7aNjkbP+k=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
-github.com/nandak522/modular-monolith/utils v0.0.0-20240221092251-9c9ca2105b74 h1:P+aMDoIL6zuKlgmRksO2TRGPx765pK4x4P+z2cfgVuE=
-github.com/nandak522/modular-monolith/utils v0.0.0-20240221092251-9c9ca2105b74/go.mod h1:3PITePcZvSYvqLwjXTzdW+fVxXauSZv//L6STLIz6zk=
+github.com/nandak522/modular-monolith/shared v0.0.0-20240221092251-9c9ca2105b74 h1:P+aMDoIL6zuKlgmRksO2TRGPx765pK4x4P+z2cfgVuE=
+github.com/nandak522/modular-monolith/shared v0.0.0-20240221092251-9c9ca2105b74/go.mod h1:3PITePcZvSYvqLwjXTzdW+fVxXauSZv//L6STLIz6zk=
 github.com/pelletier/go-toml/v2 v2.1.0 h1:FnwAJ4oYMvbT/34k9zzHuZNrhlz48GB3/s6at6/MHO4=
 github.com/pelletier/go-toml/v2 v2.1.0/go.mod h1:tJU2Z3ZkXwnxa4DPO899bsyIoywizdUvyaeZurnPPDc=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
