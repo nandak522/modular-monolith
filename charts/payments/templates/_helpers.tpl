@@ -187,6 +187,7 @@ annotations:
   checksum/infra-secrets: {{ include (print $.Template.BasePath "/infra-secrets.tpl") . | sha256sum }}
   checksum/configmap: {{ include (print $.Template.BasePath "/configmap.tpl") . | sha256sum }}
   checksum/secrets: {{ include (print $.Template.BasePath "/secreds.tpl") . | sha256sum }}
+  strategy.spinnaker.io/versioned: "true"
 {{- end }}
 
 {{- define "app.probe" -}}

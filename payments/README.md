@@ -22,6 +22,8 @@ helm template -v 5 \
     --debug \
     --values values-default.yaml \
     payments \
+    --values values-secrets.yaml \
+    --values values-infra-secrets.yaml
     .
 
 helm upgrade -v 3 \
@@ -36,6 +38,8 @@ helm upgrade -v 3 \
     --cleanup-on-fail \
     --values values-default.yaml \
     payments \
+    --values values-secrets.yaml \
+    --values values-infra-secrets.yaml \
     .
 ```
 
