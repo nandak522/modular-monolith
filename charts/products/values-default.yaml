@@ -23,7 +23,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.1
+        imageTag: products-0.1.4
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
@@ -74,5 +74,5 @@ requiredInfraDependencies:
     SERVICE_A: $SERVICE_A
 # NOTE: nodeLabels renders the nodeSelector block.
 # nodeAffinityLabels, although can be used as an alternative to `nodeSelector`, is much more powerful than `nodeSelector`.
-nodeLabels:
-  environment: worker
+# nodeLabels:
+#   environment: worker
