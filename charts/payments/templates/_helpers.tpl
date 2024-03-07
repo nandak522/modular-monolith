@@ -184,9 +184,9 @@ Renders Pod Annotations. Handy to roll the Pod as and when a configmap/secret ch
 {{- define "app.podAnnotations" -}}
 {{- $namespace := .Values.namespace -}}
 annotations:
-  checksum/infra-secrets: {{ include (print $.Template.BasePath "/infra-secrets.yaml") . | sha256sum }}
-  checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-  checksum/secrets: {{ include (print $.Template.BasePath "/secreds.yaml") . | sha256sum }}
+  checksum/infra-secrets: {{ include (print $.Template.BasePath "/infra-secrets.tpl") . | sha256sum }}
+  checksum/configmap: {{ include (print $.Template.BasePath "/configmap.tpl") . | sha256sum }}
+  checksum/secrets: {{ include (print $.Template.BasePath "/secreds.tpl") . | sha256sum }}
 {{- end }}
 
 {{- define "app.probe" -}}
