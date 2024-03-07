@@ -26,3 +26,5 @@ values-*
 
 # But do not ignore 'values-default.yaml'
 !values-default.yaml
+!values-infra-secrets.yaml
+!values-secrets.yaml

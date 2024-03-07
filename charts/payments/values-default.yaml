@@ -55,5 +55,24 @@ deployments:
       maxUnavailable: "20%"
     replicas: 1 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
     # terminationGracePeriodSeconds: 60
+configMaps:
+  - name: config-plain
+    data:
+      ADD_FUN: "yes"
+configFiles:
+  - name: config-file
+    file: config.json
+    mountPath: /service/config.json
+# NOTE: secrets are part of values-secrets.yaml
+requiredInfraDependencies:
+  name: app-infra
+  values:
+    # NOTE: All the below values are interpreted from values-infra-secrets-<env>.yaml
+    # MYSQL_HOST: $MY_MASTER_DATABASE_HOST
+    MYSQL_HOST: $MY_DATABASE_HOST
+    MYSQL_PORT: $MY_DATABASE_PORT
+    SERVICE_A: $SERVICE_A
+# NOTE: nodeLabels renders the nodeSelector block.
+# nodeAffinityLabels, although can be used as an alternative to `nodeSelector`, is much more powerful than `nodeSelector`.
 nodeLabels:
   environment: worker

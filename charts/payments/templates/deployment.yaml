@@ -29,8 +29,7 @@ spec:
         {{- toYaml $currentDeployment.podLabels | nindent 8 }}
         {{- end -}}
       {{- end }}
-      annotations:
-        {{- include "app.podAnnotations" $currentDeployment | nindent 8 }}
+      {{- include "app.podAnnotations" $root | nindent 6 }}
     spec:
       {{- if $currentDeployment.imagePullSecret }}
       imagePullSecrets:
