@@ -4,7 +4,7 @@ apiVersion: v1
 kind: Secret
 type: Opaque
 metadata:
-  name: {{ .Values.requiredInfraDependencies.name }}
+  name: {{ include "app.appendReleaseName" (dict "releaseName" $root.Release.Name "resourceName" .Values.requiredInfraDependencies.name) }}
   namespace: {{ .Values.namespace.name }}
 data:
   # Iterate on all required keys of .requiredInfraDependencies and
