@@ -25,14 +25,14 @@ spec:
       {{- end }}
   template:
     metadata:
-      {{- if $currentDeployment.podLabels}}
       labels:
         app: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" $currentDeployment.name) }}
         {{- if $currentDeployment.podLabels }}
         {{- toYaml $currentDeployment.podLabels | nindent 8 }}
-        {{- end -}}
-      {{- end }}
-      {{- include "app.podAnnotations" $root | nindent 6 }}
+        {{- end }}
+      annotations:
+        {{- toYaml $currentDeployment.podAnnotations | nindent 8 -}}
+        {{- include "app.checksumAnnotations" $root | nindent 8 }}
     spec:
       {{- if $currentDeployment.imagePullSecret }}
       imagePullSecrets:

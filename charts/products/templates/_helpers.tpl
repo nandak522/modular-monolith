@@ -185,15 +185,12 @@ Renders VolumeMounts for the Pod
 {{- end -}}
 
 {{/*
-Renders Pod Annotations. Handy to roll the Pod as and when a configmap/secret changes.
+Renders Checksum Annotations. Handy to roll the Pod as and when a configmap/secret changes.
 */}}
-{{- define "app.podAnnotations" -}}
-{{- $namespace := .Values.namespace -}}
-annotations:
-  checksum/infra-secrets: {{ include (print $.Template.BasePath "/infra-secrets.tpl") . | sha256sum }}
-  checksum/configmap: {{ include (print $.Template.BasePath "/configmap.tpl") . | sha256sum }}
-  checksum/secrets: {{ include (print $.Template.BasePath "/secreds.tpl") . | sha256sum }}
-  strategy.spinnaker.io/versioned: "true"
+{{- define "app.checksumAnnotations" -}}
+checksum/infra-secrets: {{ include (print $.Template.BasePath "/infra-secrets.tpl") . | sha256sum }}
+checksum/configmap: {{ include (print $.Template.BasePath "/configmap.tpl") . | sha256sum }}
+checksum/secrets: {{ include (print $.Template.BasePath "/secreds.tpl") . | sha256sum }}
 {{- end }}
 
 {{- define "app.probe" -}}
