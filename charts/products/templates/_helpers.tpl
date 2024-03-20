@@ -77,7 +77,8 @@ affinity:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .config.name }}
+  {{- $releaseInfo := dict "releaseName" .root.Release.Name "resourceName" .config.name }}
+  name: {{ include "app.appendReleaseName" $releaseInfo }}
   namespace: {{ .namespace.name }}
 data:
 {{- toYaml .config.data | nindent 2 }}
@@ -87,7 +88,8 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .config.name }}
+  {{- $releaseInfo := dict "releaseName" .root.Release.Name "resourceName" .config.name }}
+  name: {{ include "app.appendReleaseName" $releaseInfo }}
   namespace: {{ .namespace.name }}
 data:
   {{- (.root.Files.Glob (printf "%s" .config.file)).AsConfig | nindent 2 }}
@@ -101,7 +103,8 @@ apiVersion: v1
 kind: Secret
 type: Opaque
 metadata:
-  name: {{ .secret.name }}
+  {{- $releaseInfo := dict "releaseName" .root.Release.Name "resourceName" .secret.name }}
+  name: {{ include "app.appendReleaseName" $releaseInfo }}
   namespace: {{ .namespace.name }}
 data:
 {{- toYaml .secret.data | nindent 2 }}
@@ -115,7 +118,8 @@ apiVersion: v1
 kind: Secret
 type: Opaque
 metadata:
-  name: {{ .secret.name }}
+  {{- $releaseInfo := dict "releaseName" .root.Release.Name "resourceName" .secret.name }}
+  name: {{ include "app.appendReleaseName" $releaseInfo }}
   namespace: {{ .namespace.name }}
 data:
   {{- (.root.Files.Glob (printf "%s" .secret.file)).AsSecrets | nindent 2 }}
@@ -125,6 +129,7 @@ data:
 Renders VolumeMounts for the Container in a Pod
 */}}
 {{- define "app.containerVolumeMounts" -}}
+{{ $releaseName := .releaseName }}
 {{- if hasKey . "configFileName" -}}
 {{- $configFileName := .configFileName }}
 {{- range $index, $volumeMountData := .configFiles -}}
@@ -132,7 +137,7 @@ Renders VolumeMounts for the Container in a Pod
 {{ if eq $volumeMountData.name $configFileName }}
 - mountPath: {{ $volumeMountData.mountPath }}
   subPath: {{ $volumeMountData.file }}
-  name: {{ $volumeMountData.name }}
+  name: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" $volumeMountData.name) }}
   readOnly: true
 {{- end }}
 {{- end }}
@@ -144,7 +149,7 @@ Renders VolumeMounts for the Container in a Pod
 {{ if eq $volumeMountData.name $secretsFileName }}
 - mountPath: {{ $volumeMountData.mountPath }}
   subPath: {{ $volumeMountData.file }}
-  name: {{ $volumeMountData.name }}
+  name: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" $volumeMountData.name) }}
   readOnly: true
 {{- end }}
 {{- end }}
@@ -156,23 +161,24 @@ Renders VolumeMounts for the Container in a Pod
 Renders VolumeMounts for the Pod
 */}}
 {{- define "app.podVolumes" -}}
+{{ $releaseName := .releaseName }}
 {{- if hasKey . "configFileName" }}
-{{$configFileName := .configFileName }}
+{{ $configFileName := .configFileName }}
 {{- range .podVolumes.configFiles -}}
 {{- if eq .name $configFileName }}
 - configMap:
-    name: {{ .name }}
-  name: {{ .name }}
+    name: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" .name) }}
+  name: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" .name) }}
 {{- end }}
 {{- end }}
 {{- end }}
 {{- if hasKey . "secretsFileName" }}
-{{$secretsFileName := .secretsFileName }}
+{{ $secretsFileName := .secretsFileName }}
 {{- range .podVolumes.secretsFiles -}}
 {{- if eq .name $secretsFileName }}
 - secret:
-    secretName: {{ .name }}
-  name: {{ .name }}
+    secretName: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" .name) }}
+  name: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" .name) }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -229,7 +235,8 @@ metadata:
   labels:
     app: {{ .deploymentName }}
     env: {{ .environment }}
-  name: {{ .deploymentName }}
+  {{- $releaseInfo := dict "releaseName" .releaseName "resourceName" .deploymentName }}
+  name: {{ include "app.appendReleaseName" $releaseInfo }}
   namespace: {{ .config.targetNamespace }}
 spec:
   scaleTargetRef:
@@ -271,4 +278,14 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- end }}
+
+{{/*
+Custom function to append release name to resource name
+*/}}
+{{- define "app.appendReleaseName" -}}
+{{ .resourceName }}
+{{- if or (hasSuffix "baseline" .releaseName) (hasSuffix "canary" .releaseName) -}}
+-{{ .releaseName }}
+{{- end -}}
 {{- end }}

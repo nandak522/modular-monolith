@@ -6,7 +6,7 @@
 {{ $currentDeployment := . }}
 {{- if $currentDeployment.hpa -}}
 {{- if $currentDeployment.hpa.native -}}
-{{- $hpaConfig := dict "deploymentName" $currentDeployment.name "config" $currentDeployment.hpa.native "environment" $values.environment }}
+{{- $hpaConfig := dict "deploymentName" $currentDeployment.name "config" $currentDeployment.hpa.native "environment" $values.environment "releaseName" $root.Release.Name }}
 {{- include "app.nativeHPA" $hpaConfig }}
 {{ end }}
 {{ end }}

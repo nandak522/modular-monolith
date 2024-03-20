@@ -1,4 +1,5 @@
 {{- $root := . }}
+{{- $releaseName := $root.Release.Name }}
 {{- $values := $root.Values }}
 {{- $deploymentsData := $values.deployments }}
 {{- range $values.deployments }}
@@ -6,7 +7,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ $currentDeployment.name }}
+  name: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" $currentDeployment.name) }}
   namespace: {{ $values.namespace.name }}
 spec:
   {{- if .replicas}}
@@ -18,6 +19,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
+      app: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" $currentDeployment.name) }}
       {{- if $currentDeployment.podLabels }}
       {{- toYaml $currentDeployment.podLabels | nindent 6 }}
       {{- end }}
@@ -25,6 +27,7 @@ spec:
     metadata:
       {{- if $currentDeployment.podLabels}}
       labels:
+        app: {{ include "app.appendReleaseName" (dict "releaseName" $releaseName "resourceName" $currentDeployment.name) }}
         {{- if $currentDeployment.podLabels }}
         {{- toYaml $currentDeployment.podLabels | nindent 8 }}
         {{- end -}}
@@ -86,10 +89,42 @@ spec:
             {{- end }}
           resources:
           {{- toYaml .resources | nindent 12 }}
+          {{- if or (.configFileName) (.secretsFileName) }}
+          volumeMounts:
+            {{- if .configFileName -}}
+            {{- $requiredConfigFileInfo := dict "configFiles" $values.configFiles "configFileName" .configFileName "releaseName" $releaseName }}
+            {{- include "app.containerVolumeMounts" $requiredConfigFileInfo | trim | nindent 12 }}
+            {{- end }}
+            {{- if .secretsFileName -}}
+            {{- $requiredSecretsFileInfo := dict "secretsFiles" $values.secretsFiles "secretsFileName" .secretsFileName "releaseName" $releaseName }}
+            {{- include "app.containerVolumeMounts" $requiredSecretsFileInfo | trim | nindent 12 }}
+            {{- end }}
+          {{- end -}}
       {{- end -}}
+      {{- include "app.nodeLabels" $values.nodeLabels | trim | nindent 6 }}
+      {{ $podConfigMapVolumesData := dict "configFiles" $values.configFiles "type" "configFiles" -}}
+      {{ $podSecretVolumesData := dict "secretsFiles" $values.secretsFiles "type" "secretsFiles" -}}
+      {{- if or ($podConfigMapVolumesData.configFiles) ($podSecretVolumesData.secretsFiles) -}}
+      volumes:
+        {{- if $podConfigMapVolumesData.configFiles }}
+        {{- range $currentDeployment.containers }}
+        {{- if .configFileName }}
+        {{- $requiredPodVolumeInfo := dict "podVolumes" $podConfigMapVolumesData "configFileName" .configFileName "releaseName" $releaseName }}
+        {{- include "app.podVolumes" $requiredPodVolumeInfo | trim | nindent 8 }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- if $podSecretVolumesData.secretsFiles }}
+        {{- range $currentDeployment.containers }}
+        {{- if .secretsFileName }}
+        {{- $requiredPodVolumeInfo := dict "podVolumes" $podSecretVolumesData "secretsFileName" .secretsFileName "releaseName" $releaseName }}
+        {{- include "app.podVolumes" $requiredPodVolumeInfo | trim | nindent 8 }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
       {{ if $currentDeployment.terminationGracePeriodSeconds -}}
       terminationGracePeriodSeconds: {{ $currentDeployment.terminationGracePeriodSeconds }}
       {{ end }}
-      {{- include "app.nodeLabels" $values.nodeLabels | trim | nindent 6 }}
 ---
 {{ end }}

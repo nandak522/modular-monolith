@@ -5,7 +5,6 @@ namespace:
 deployments:
   - name: products
     podLabels:
-      app: products
       # prometheus.app/port: "8080"
       # prometheus.app/scrape: "true"
     # containers is an array. Hence supports multiple containers.

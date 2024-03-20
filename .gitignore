@@ -28,3 +28,6 @@ values-*
 !values-default.yaml
 !values-infra-secrets.yaml
 !values-secrets.yaml
+
+# Mac cruft
+.DS_Store
