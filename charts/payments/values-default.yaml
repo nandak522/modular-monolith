@@ -5,8 +5,7 @@ namespace:
 deployments:
   - name: payments
     podLabels:
-      app: payments
-      # prometheus.app/port: "9090"
+      # prometheus.app/port: "8080"
       # prometheus.app/scrape: "true"
     podAnnotations:
       strategy.spinnaker.io/versioned: "false"
