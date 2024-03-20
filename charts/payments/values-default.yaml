@@ -8,6 +8,8 @@ deployments:
       app: payments
       # prometheus.app/port: "9090"
       # prometheus.app/scrape: "true"
+    podAnnotations:
+      strategy.spinnaker.io/versioned: "false"
     # containers is an array. Hence supports multiple containers.
     containers:
       - name: payments

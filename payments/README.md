@@ -15,18 +15,25 @@ kubectl create ns payments
 
 cd charts/payments
 
-helm template -v 5 \
+CONTEXT=kind-cell-1-blue
+RELEASE_NAME=payments
+# RELEASE_NAME=canary
+# RELEASE_NAME=baseline
+helm --kube-context $CONTEXT template -v 5 \
     --create-namespace \
     --namespace payments \
     --logtostderr \
     --debug \
     --values values-default.yaml \
-    payments \
     --values values-secrets.yaml \
-    --values values-infra-secrets.yaml
+    --values values-infra-secrets.yaml \
+    $RELEASE_NAME \
     .
 
-helm upgrade -v 3 \
+RELEASE_NAME=payments
+# RELEASE_NAME=canary
+# RELEASE_NAME=baseline
+helm --kube-context $CONTEXT upgrade -v 3 \
     --create-namespace \
     --namespace payments \
     --logtostderr \
@@ -37,9 +44,9 @@ helm upgrade -v 3 \
     --debug \
     --cleanup-on-fail \
     --values values-default.yaml \
-    payments \
     --values values-secrets.yaml \
     --values values-infra-secrets.yaml \
+    $RELEASE_NAME \
     .
 ```
 

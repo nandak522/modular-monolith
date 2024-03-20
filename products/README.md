@@ -15,18 +15,25 @@ kubectl create ns products
 
 cd charts/products
 
-helm template -v 5 \
+CONTEXT=kind-cell-1-blue
+RELEASE_NAME=products
+# RELEASE_NAME=canary
+# RELEASE_NAME=baseline
+helm --kube-context $CONTEXT template -v 5 \
     --create-namespace \
     --namespace products \
     --logtostderr \
     --debug \
     --values values-default.yaml \
-    products \
     --values values-secrets.yaml \
-    --values values-infra-secrets.yaml
+    --values values-infra-secrets.yaml \
+    $RELEASE_NAME \
     .
 
-helm upgrade -v 3 \
+RELEASE_NAME=products
+# RELEASE_NAME=canary
+# RELEASE_NAME=baseline
+helm --kube-context $CONTEXT upgrade -v 3 \
     --create-namespace \
     --namespace products \
     --logtostderr \
@@ -37,9 +44,9 @@ helm upgrade -v 3 \
     --debug \
     --cleanup-on-fail \
     --values values-default.yaml \
-    products \
     --values values-secrets.yaml \
     --values values-infra-secrets.yaml \
+    $RELEASE_NAME \
     .
 ```
 
