@@ -1,0 +1,41 @@
+{{- $root := . }}
+{{- $values := $root.Values }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-upgrade-restore-replicas
+  namespace: {{ $values.namespace.name }}
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: restore-replicas
+        image: nanda/just-helm-in-docker:v5
+        env:
+          - name: NAMESPACE
+            value: {{ $values.namespace.name }}
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            set -o xtrace
+            set -o nounset
+            set -o pipefail
+
+            for kv in $(yq e '.replicaCounts | to_entries | .[] | "\(.key)=\(.value)"' /config/replicas-counts.yaml); do
+                deployment_name=$(echo $kv | cut -d'=' -f1)
+                replicas_count=$(echo $kv | cut -d'=' -f2)
+                kubectl scale deployment $deployment_name --replicas=$replicas_count -n $NAMESPACE
+            done
+
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      restartPolicy: OnFailure
+      volumes:
+      - name: config
+        configMap:
+          name: replicas-counts
