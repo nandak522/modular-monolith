@@ -1,0 +1,30 @@
+{{- $root := . }}
+{{- $values := $root.Values }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-upgrade-cleanup
+  namespace: {{ $values.namespace.name }}
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-weight": "1"  # Ensure this runs after restore-replicas
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: delete-replicas-counts-configmap
+        image: nanda/just-helm-in-docker:v5
+        env:
+          - name: NAMESPACE
+            value: {{ $values.namespace.name }}
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            set -o xtrace
+            set -o nounset
+            set -o pipefail
+
+            kubectl delete configmap replicas-counts -n $NAMESPACE
+      restartPolicy: OnFailure

@@ -1,0 +1,37 @@
+{{- $root := . }}
+{{- $values := $root.Values }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pre-upgrade-capture-replicas
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+  namespace: {{ $values.namespace.name }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: capture-replicas
+        image: nanda/just-helm-in-docker:v5
+        env:
+          - name: NAMESPACE
+            value: {{ $values.namespace.name }}
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            set -o xtrace
+            set -o nounset
+            set -o pipefail
+
+            OUTPUT_FILE='replicas-counts.yaml'
+            CONFIGMAP_NAME=replicas-counts
+
+            echo "replicasCounts:" > $OUTPUT_FILE
+            for deployment in $(kubectl get deployments -n $NAMESPACE -o jsonpath='{.items[*].metadata.name}'); do
+              replicas=$(kubectl get deployment $deployment -n $NAMESPACE -o jsonpath='{.spec.replicas}')
+              echo "  $deployment: $replicas" >> $OUTPUT_FILE
+            done
+            cat $OUTPUT_FILE
+            kubectl create --save-config configmap $CONFIGMAP_NAME --from-file=replicas-counts.yaml --namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
