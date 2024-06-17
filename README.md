@@ -8,5 +8,3 @@ This monolithic repo hosts independent Golang services like `products` and `paym
 - [x] `payments` service runs at `9090`
     - [x] Graceful termination
 - [x] dynamic log level adjustment for each service.
-
-TODO
