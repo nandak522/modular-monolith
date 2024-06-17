@@ -1,4 +1,4 @@
-name: Merge Main/Master to Special Branch
+name: Merge Main to Special Branch
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Merge changes from main/master
+      - name: Merge changes from main
         id: merge
         # TODO: Scale the below merge to multiple special branches
         run: |
