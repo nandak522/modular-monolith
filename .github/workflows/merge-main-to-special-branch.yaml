@@ -16,7 +16,10 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Checkout target branch
-        run: git checkout restricted
+        run: |
+          git branch -a
+          git fetch origin restricted
+          git checkout origin/restricted
 
       - name: Configure git
         run: |
