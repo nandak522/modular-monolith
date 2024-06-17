@@ -11,5 +11,5 @@ jobs:
       - name: Check base branch and source branch
         if: github.base_ref == 'main' && github.head_ref == 'restricted'
         run: |
-          echo "Merging from 'restricted' branch to 'main' is not allowed."
+          echo "Merging from 'restricted' branch to 'main' is NOT allowed."
           exit 1
