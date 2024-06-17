@@ -32,7 +32,6 @@ jobs:
         run: |
           git config --global --list
           git merge --allow-unrelated-histories --no-ff ${{ github.ref }}
-          cat .github/workflows/merge-main-to-special-branch.yaml
 
       - name: Push changes
         if: steps.merge.outcome == 'success'
@@ -40,4 +39,6 @@ jobs:
 
       - name: Check for merge conflict
         if: failure() && steps.merge.outcome == 'failure'
-        run: git status
+        run: |
+          git status
+          cat .github/workflows/merge-main-to-special-branch.yaml
