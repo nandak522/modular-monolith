@@ -31,6 +31,7 @@ jobs:
         # TODO: Scale the below merge to multiple special branches
         run: |
           git config --global --list
+          git remote -v
           git merge --allow-unrelated-histories --no-ff ${{ github.ref }}
 
       - name: Push changes
