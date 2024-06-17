@@ -20,9 +20,9 @@ jobs:
         id: check_branch
         run: |
           if git ls-remote --heads origin restricted | grep -q 'refs/heads/restricted'; then
-            echo "::set-output name=branch_exists::true"
+            echo "{branch_exists}={true}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=branch_exists::false"
+            echo "{branch_exists}={false}" >> $GITHUB_OUTPUT
             exit 0
           fi
 
