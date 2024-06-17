@@ -16,18 +16,31 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: Check if target branch exists
+        id: check_branch
+        run: |
+          if git ls-remote --heads origin restricted | grep -q 'refs/heads/restricted'; then
+            echo "::set-output name=branch_exists::true"
+          else
+            echo "::set-output name=branch_exists::false"
+            exit 0
+          fi
+
       - name: Checkout target branch
+        if: steps.check_branch.outputs.branch_exists == 'true'
         run: |
           git fetch origin restricted
           git checkout origin/restricted
 
       - name: Configure git
+        if: steps.check_branch.outputs.branch_exists == 'true'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Merge incoming changes
         id: merge
+        if: steps.check_branch.outputs.branch_exists == 'true'
         # TODO: Scale the below merge to multiple special branches
         run: |
           git config --global --list
@@ -35,11 +48,11 @@ jobs:
           git merge --allow-unrelated-histories --no-ff ${{ github.ref }}
 
       - name: Push changes
-        if: steps.merge.outcome == 'success'
+        if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outcome == 'success'
         run: git push -u origin restricted
 
       - name: Check for merge conflict
-        if: failure() && steps.merge.outcome == 'failure'
+        if: steps.check_branch.outputs.branch_exists == 'true' && failure() && steps.merge.outcome == 'failure'
         run: |
           git status
           cat .github/workflows/merge-main-to-special-branch.yaml
