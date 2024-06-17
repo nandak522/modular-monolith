@@ -13,3 +13,6 @@ jobs:
         run: |
           echo "Merging from 'restricted' branch to 'main' is NOT allowed."
           exit 1
+      - name: Create status check
+        run: echo "Status check passed"
+        if: github.base_ref != 'main' || github.head_ref != 'restricted-branch'
