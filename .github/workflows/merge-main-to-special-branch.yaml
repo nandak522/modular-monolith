@@ -33,9 +33,9 @@ jobs:
           git merge --allow-unrelated-histories --no-ff ${{ github.ref }} || echo "Merge conflict detected" > merge_conflict.txt
 
       - name: Push changes
-        if: success()
-        run: git push origin restricted
+        if: steps.merge.outcome == 'success'
+        run: git push -u origin restricted
 
       - name: Check for merge conflict
-        if: failure()
+        if: failure() && steps.merge.outcome == 'failure'
         run: cat merge_conflict.txt
