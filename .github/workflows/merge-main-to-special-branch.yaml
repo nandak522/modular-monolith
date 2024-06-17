@@ -17,7 +17,6 @@ jobs:
 
       - name: Checkout target branch
         run: |
-          git branch -a
           git fetch origin restricted
           git checkout origin/restricted
 
@@ -30,7 +29,7 @@ jobs:
         id: merge
         # TODO: Scale the below merge to multiple special branches
         run: |
-          git merge ${{ github.ref }} || echo "Merge conflict detected" > merge_conflict.txt
+          git merge --allow-unrelated-histories --no-ff ${{ github.ref }} || echo "Merge conflict detected" > merge_conflict.txt
 
       - name: Push changes
         if: success()
