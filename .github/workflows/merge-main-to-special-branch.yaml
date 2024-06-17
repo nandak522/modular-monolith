@@ -6,8 +6,9 @@ on:
       - main
 
 jobs:
-  merge:
+  merge-main-to-special-branch:
     runs-on: ubuntu-latest
+    continue-on-error: false
 
     steps:
       - name: Checkout source branch
@@ -17,7 +18,6 @@ jobs:
 
       - name: Checkout target branch
         run: |
-          git branch -a
           git fetch origin restricted
           git checkout origin/restricted
 
@@ -30,12 +30,12 @@ jobs:
         id: merge
         # TODO: Scale the below merge to multiple special branches
         run: |
-          git merge ${{ github.ref }} || echo "Merge conflict detected" > merge_conflict.txt
+          git merge --allow-unrelated-histories --no-ff ${{ github.ref }}
 
       - name: Push changes
-        if: success()
-        run: git push origin restricted
+        if: steps.merge.outcome == 'success'
+        run: git push -u origin restricted
 
       - name: Check for merge conflict
-        if: failure()
-        run: cat merge_conflict.txt
+        if: failure() && steps.merge.outcome == 'failure'
+        run: git status
