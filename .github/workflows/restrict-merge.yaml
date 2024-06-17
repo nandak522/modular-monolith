@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check base branch and source branch
+        # TODO: Scale the below if condition to multiple restricted branches
         if: (github.base_ref == 'main' || github.base_ref == 'master') && github.head_ref == 'restricted'
         run: |
           echo "Merging from 'restricted' branch to 'main' is NOT allowed."
