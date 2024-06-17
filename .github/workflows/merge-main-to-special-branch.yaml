@@ -6,8 +6,9 @@ on:
       - main
 
 jobs:
-  merge:
+  merge-main-to-special-branch:
     runs-on: ubuntu-latest
+    continue-on-error: false
 
     steps:
       - name: Checkout source branch
