@@ -38,4 +38,4 @@ jobs:
 
       - name: Check for merge conflict
         if: failure() && steps.merge.outcome == 'failure'
-        run: cat merge_conflict.txt
+        run: git status
