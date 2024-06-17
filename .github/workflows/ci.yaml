@@ -77,7 +77,7 @@ jobs:
       id: extract-version
       run: |
         VERSION=`grep -E "MAJOR|MINOR|PATCH" version.go | cut -d '"' -f 2 | xargs echo -n | tr -s " " "."`
-        echo "::set-output name=VERSION::$VERSION"
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
       working-directory: ${{ matrix.module }}
 
     - name: Check for version change and build & push version-specific Docker image
