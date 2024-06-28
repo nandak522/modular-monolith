@@ -77,3 +77,10 @@ requiredInfraDependencies:
 # nodeAffinityLabels, although can be used as an alternative to `nodeSelector`, is much more powerful than `nodeSelector`.
 # nodeLabels:
 #   environment: worker
+
+# custom-resources
+crons:
+  - name: custom-cron
+    timing: "* * * * */5"
+  - name: custom-cron-2
+    timing: "* * * * */3"
