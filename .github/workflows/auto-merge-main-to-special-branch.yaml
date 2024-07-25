@@ -55,20 +55,46 @@ jobs:
         id: merge
         if: steps.check_branch.outputs.branch_exists == 'true'
         run: |
-          git config --global --list
-          git branch -a
-          git merge --allow-unrelated-histories --no-ff ${{ github.ref }}
-        continue-on-error: true
+          if git merge --no-commit --no-ff --allow-unrelated-histories origin/main; then
+            echo "merge_status=success" >> $GITHUB_OUTPUT
+            git merge --abort  # Clean up the working directory
+          else
+            echo "merge_status=conflict" >> $GITHUB_OUTPUT
+            git merge --abort  # Clean up the working directory
+          fi
 
       - name: Push changes
-        if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outcome == 'success'
+        if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outputs.merge_status == 'success'
         run: |
           git branch -a
+          git merge --no-ff --allow-unrelated-histories origin/main
           git push -u origin ${{ matrix.release_branch }}
 
-      - name: Check for merge conflict
-        if: steps.check_branch.outputs.branch_exists == 'true' && failure() && steps.merge.outcome == 'failure'
+      - name: Report merge status
+        if: always()
         run: |
-          echo "Merge conflict detected in ${{ matrix.release_branch }}. Manual intervention required."
-          git status
-          exit 1
+          if [[ "${{ steps.check_branch.outputs.branch_exists }}" == "false" ]]; then
+            echo "Branch ${{ matrix.release_branch }} does not exist." >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ steps.merge.outputs.merge_status }}" == "conflict" ]]; then
+            echo "Merge conflict detected in ${{ matrix.release_branch }}. Manual intervention required." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          elif [[ "${{ steps.merge.outputs.merge_status }}" == "success" ]]; then
+            echo "Successfully merged main into ${{ matrix.release_branch }}." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Unexpected status for ${{ matrix.release_branch }}." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+  check-overall-status:
+    needs: merge-main-to-special-branch
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check if any merges failed
+        run: |
+          if [[ "${{ contains(needs.merge-main-to-special-branch.result, 'failure') }}" == "true" ]]; then
+            echo "One or more merges failed. Please check the individual job results." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "All merges completed successfully." >> $GITHUB_STEP_SUMMARY
+          fi
