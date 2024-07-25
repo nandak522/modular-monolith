@@ -1,12 +1,23 @@
-name: Merge Main to Special Branch
+name: Auto-Merge main to special branches
 
 on:
   push:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   merge-main-to-special-branch:
+    strategy:
+      matrix:
+        release_branch:
+          - restricted
+            # Add more special branches as needed
+
+      fail-fast: false
+
     runs-on: ubuntu-latest
     continue-on-error: false
 
@@ -15,22 +26,24 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
+          fetch-depth: 0
 
       - name: Check if target branch exists
         id: check_branch
         run: |
-          if git ls-remote --heads origin restricted | grep -q 'refs/heads/restricted'; then
+          if git ls-remote --heads origin ${{ matrix.release_branch }} | grep -q 'refs/heads/${{ matrix.release_branch }}'; then
             echo "branch_exists=true" >> $GITHUB_OUTPUT
           else
             echo "branch_exists=false" >> $GITHUB_OUTPUT
+            echo "Release branch ${{ matrix.release_branch }} does not exist. Skipping."
             exit 0
           fi
 
       - name: Checkout target branch
         if: steps.check_branch.outputs.branch_exists == 'true'
         run: |
-          git fetch origin restricted
-          git checkout origin/restricted
+          git fetch origin ${{ matrix.release_branch }}
+          git checkout -b ${{ matrix.release_branch }} origin/${{ matrix.release_branch }}
 
       - name: Configure git
         if: steps.check_branch.outputs.branch_exists == 'true'
@@ -41,18 +54,21 @@ jobs:
       - name: Merge incoming changes
         id: merge
         if: steps.check_branch.outputs.branch_exists == 'true'
-        # TODO: Scale the below merge to multiple special branches
         run: |
           git config --global --list
-          git remote -v
+          git branch -a
           git merge --allow-unrelated-histories --no-ff ${{ github.ref }}
+        continue-on-error: true
 
       - name: Push changes
         if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outcome == 'success'
-        run: git push -u origin restricted
+        run: |
+          git branch -a
+          git push -u origin ${{ matrix.release_branch }}
 
       - name: Check for merge conflict
         if: steps.check_branch.outputs.branch_exists == 'true' && failure() && steps.merge.outcome == 'failure'
         run: |
+          echo "Merge conflict detected in ${{ matrix.release_branch }}. Manual intervention required."
           git status
-          cat .github/workflows/merge-main-to-special-branch.yaml
+          exit 1
