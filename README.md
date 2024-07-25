@@ -1,6 +1,8 @@
 # Modular Monolith
 
-This monolithic repo hosts independent Golang services like `products` and `payments`, treated as separate modules for independent deployment.
+This monolithic repo hosts independent Golang services like `products` and `payments`, treated as separate modules for independent deployment
+
+
 ### Notable features
 
 - [x] `products` service runs at `8080`.
