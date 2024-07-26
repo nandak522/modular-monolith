@@ -20,18 +20,17 @@ jobs:
 
     steps:
 
-      - name: Generate token
-        id: generate_token
-        uses: tibdex/github-app-token@v2
+      - name: Generate App Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
         with:
-          app_id: ${{ secrets.BRANCH_AUTO_MERGER_APP_ID }}
-          private_key: ${{ secrets.BRANCH_AUTO_MERGER_APP_PRIVATE_KEY }}
-          installation_id: ${{ secrets.BRANCH_AUTO_MERGER_APP_INSTALLATION_ID }}
+          app-id: ${{ secrets.BRANCH_AUTO_MERGER_APP_ID }}
+          private-key: ${{ secrets.BRANCH_AUTO_MERGER_APP_PRIVATE_KEY }}
 
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
-          token: ${{ steps.generate_token.outputs.token }}
+          token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.ref }}
           fetch-depth: 0
 
@@ -75,7 +74,7 @@ jobs:
       - name: Push changes
         if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outputs.merge_status == 'success'
         env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           git branch -a
           git merge --no-ff --allow-unrelated-histories origin/main
