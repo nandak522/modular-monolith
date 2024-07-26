@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-
 jobs:
   merge-main-to-special-branch:
     strategy:
@@ -25,6 +22,7 @@ jobs:
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.AUTO_MERGE_TOKEN }}
           ref: ${{ github.ref }}
           fetch-depth: 0
 
@@ -67,6 +65,8 @@ jobs:
 
       - name: Push changes
         if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outputs.merge_status == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
         run: |
           git branch -a
           git merge --no-ff --allow-unrelated-histories origin/main
