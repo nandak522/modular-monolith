@@ -1,5 +1,6 @@
 {{- $root := . }}
 {{- $values := $root.Values }}
+{{/*
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -39,3 +40,4 @@ spec:
       - name: config
         configMap:
           name: replicas-counts
+*/}}
