@@ -26,6 +26,8 @@ jobs:
         with:
           app-id: ${{ secrets.BRANCH_AUTO_MERGER_APP_ID }}
           private-key: ${{ secrets.BRANCH_AUTO_MERGER_APP_PRIVATE_KEY }}
+          # owner: ${{ github.repository_owner }}
+          repositories: "modular-monolith"
 
       - name: Checkout source branch
         uses: actions/checkout@v4
