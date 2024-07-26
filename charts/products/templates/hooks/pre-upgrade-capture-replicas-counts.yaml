@@ -1,5 +1,6 @@
 {{- $root := . }}
 {{- $values := $root.Values }}
+{{/*
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -35,3 +36,4 @@ spec:
             done
             cat $OUTPUT_FILE
             kubectl create --save-config configmap $CONFIGMAP_NAME --from-file=replicas-counts.yaml --namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+*/}}
