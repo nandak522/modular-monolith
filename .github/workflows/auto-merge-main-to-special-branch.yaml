@@ -26,7 +26,7 @@ jobs:
         with:
           app-id: ${{ secrets.BRANCH_AUTO_MERGER_APP_ID }}
           private-key: ${{ secrets.BRANCH_AUTO_MERGER_APP_PRIVATE_KEY }}
-          # owner: ${{ github.repository_owner }}
+          owner: ${{ github.repository_owner }}
           repositories: "modular-monolith"
 
       - name: Checkout source branch
@@ -63,9 +63,9 @@ jobs:
         id: merge
         if: steps.check_branch.outputs.branch_exists == 'true'
         run: |
-          if git merge --no-commit --no-ff --allow-unrelated-histories origin/main; then
+          if git merge --no-commit --no-ff --allow-unrelated-histories ${{ github.ref }}; then
             echo "merge_status=success" >> $GITHUB_OUTPUT
-            echo "::notice title=Merge Status::Merge main into ${{ matrix.release_branch }} is possible. No conflicts detected."
+            echo "::notice title=Merge Status::Merge ${{ github.ref }} into ${{ matrix.release_branch }} is possible. No conflicts detected."
             git merge --abort  # Clean up the working directory
           else
             echo "merge_status=conflict" >> $GITHUB_OUTPUT
@@ -79,7 +79,7 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           git branch -a
-          git merge --no-ff --allow-unrelated-histories origin/main
+          git merge --no-ff --allow-unrelated-histories ${{ github.ref }}
           git push -u origin ${{ matrix.release_branch }}
 
       - name: Report merge status
@@ -93,8 +93,8 @@ jobs:
             echo "Merge conflict detected in ${{ matrix.release_branch }}. Manual intervention required." >> $GITHUB_STEP_SUMMARY
             exit 1
           elif [[ "${{ steps.merge.outputs.merge_status }}" == "success" ]]; then
-            echo "::notice title=Merge Successful::Successfully merged main into ${{ matrix.release_branch }}."
-            echo "Successfully merged main into ${{ matrix.release_branch }}." >> $GITHUB_STEP_SUMMARY
+            echo "::notice title=Merge Successful::Successfully merged ${{ github.ref }} into ${{ matrix.release_branch }}."
+            echo "Successfully merged '${{ github.ref }}' branch into '${{ matrix.release_branch }}' branch." >> $GITHUB_STEP_SUMMARY
           else
             echo "::error title=Unexpected Status::Unexpected status for ${{ matrix.release_branch }}."
             echo "Unexpected status for ${{ matrix.release_branch }}." >> $GITHUB_STEP_SUMMARY
