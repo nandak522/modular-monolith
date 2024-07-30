@@ -1,5 +1,6 @@
 {{- $root := . }}
 {{- $values := $root.Values }}
+{{/*
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -28,3 +29,4 @@ spec:
 
             kubectl delete configmap replicas-counts -n $NAMESPACE
       restartPolicy: OnFailure
+*/}}
