@@ -11,3 +11,4 @@ This monolithic repo hosts independent Golang services like `products` and `paym
     - [x] Graceful Termination
 - [x] dynamic log level adjustment for each service.
 - [x] auto-merging of main branch to a few special branches via a Github App
+
