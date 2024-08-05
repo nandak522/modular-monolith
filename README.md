@@ -3,7 +3,7 @@
 This monolithic repo hosts independent Golang services like `products` and `payments`, treated as separate modules for independent deployment
 
 
-### Notable features
+## Notable features
 
 - [x] `products` service runs at `8080`.
     - [x] Graceful Termination
