@@ -36,7 +36,7 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
-      - name: Check if target branch exists
+      - name: Check if target branch '${{ matrix.release_branch }}' exists
         id: check_branch
         run: |
           if git ls-remote --heads origin ${{ matrix.release_branch }} | grep -q 'refs/heads/${{ matrix.release_branch }}'; then
@@ -47,7 +47,7 @@ jobs:
             exit 0
           fi
 
-      - name: Checkout target branch
+      - name: Checkout target branch '${{ matrix.release_branch }}'
         if: steps.check_branch.outputs.branch_exists == 'true'
         run: |
           git fetch origin ${{ matrix.release_branch }}
