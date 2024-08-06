@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  verify_merge_restrictions:
+  verify-merge-restrictions:
     strategy:
       matrix:
         release_branch:
