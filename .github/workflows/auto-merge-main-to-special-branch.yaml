@@ -59,7 +59,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Merge incoming changes
+      - name: Test merging of ${{ github.ref }} branch into ${{ matrix.release_branch }} branch
         id: merge
         if: steps.check_branch.outputs.branch_exists == 'true'
         run: |
@@ -82,7 +82,7 @@ jobs:
             fi
           fi
 
-      - name: Push changes
+      - name: Merge and Push changes
         if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outputs.merge_status == 'success'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
