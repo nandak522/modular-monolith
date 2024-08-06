@@ -88,7 +88,8 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git merge --no-ff --allow-unrelated-histories ${{ github.ref }} -m "[Automated] Merge ${{ github.ref }} into ${{ matrix.release_branch }}
+          git merge --no-ff --allow-unrelated-histories ${{ github.ref }} --cleanup=verbatim -m "[Automated] Merge ${{ github.ref }} into ${{ matrix.release_branch }}
+
 
           skip-checks: true"
           git push -u origin ${{ matrix.release_branch }}
