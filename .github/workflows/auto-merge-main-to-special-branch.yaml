@@ -63,7 +63,6 @@ jobs:
         id: merge
         if: steps.check_branch.outputs.branch_exists == 'true'
         run: |
-          env
           # Fetch the latest changes
           git fetch origin ${{ github.ref }}
 
