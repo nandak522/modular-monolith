@@ -9,7 +9,7 @@ on:
       - '.gitignore'
       - '/README.md'
 jobs:
-  test-and-build:
+  ci-build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
