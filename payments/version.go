@@ -5,5 +5,5 @@ package main
 var VERSION = [...]string{
 	"0", // MAJOR,
 	"1", // MINOR,
-	"8", // PATCH,
+	"9", // PATCH,
 }
