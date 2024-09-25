@@ -24,7 +24,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.4
+        imageTag: products-0.1.10
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain

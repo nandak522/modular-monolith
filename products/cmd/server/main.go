@@ -171,7 +171,7 @@ func (a *App) getProductsListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) handleError(w http.ResponseWriter, err error, statusCode int) {
-	a.Logger.Error("Error:", err)
+	a.Logger.Error(fmt.Sprintf("Error: %s", err))
 	http.Error(w, http.StatusText(statusCode), statusCode)
 }
 
@@ -210,7 +210,7 @@ func (a *App) setupHTTPServer() {
 func (a *App) startHTTPServer() {
 	a.Logger.Info(fmt.Sprintf("%s service listening on %s...", a.Config.AppName, a.HTTPServer.Addr))
 	if err := a.HTTPServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		a.Logger.Error("Error starting server:", err)
+		a.Logger.Error(fmt.Sprintf("Error starting server: %s", err))
 		os.Exit(1)
 	}
 }
@@ -230,7 +230,7 @@ func (a *App) handleShutdown() {
 	defer cancel()
 
 	if err := a.HTTPServer.Shutdown(ctx); err != nil {
-		a.Logger.Error("Error during server shutdown:", err)
+		a.Logger.Error(fmt.Sprintf("Error during server shutdown: %s", err))
 	}
 
 	// Exit the application
