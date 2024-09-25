@@ -1,4 +1,4 @@
-FROM golang:1.22 as builder
+FROM golang:1.23 as builder
 ENV USER=appuser \
     UID=10001 \
     GO111MODULE=on \
