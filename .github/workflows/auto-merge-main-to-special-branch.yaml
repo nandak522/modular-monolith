@@ -133,7 +133,7 @@ jobs:
           fi
 
       - name: Find commit author in Slack
-        if: always() && env.notify_conflicts_on_slack == "true" && steps.merge.outputs.merge_status == 'conflict'
+        if: always() && env.notify_conflicts_on_slack == 'true' && steps.merge.outputs.merge_status == 'conflict'
         id: find_commit_author_in_slack
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BRANCH_AUTO_MERGER_SLACK_APP_BOT_TOKEN }}
@@ -153,7 +153,7 @@ jobs:
           echo "commit_author_slack_handle=$commit_author_slack_handle" >> $GITHUB_OUTPUT
 
       - name: Send Slack notification on conflict
-        if: always() && env.notify_conflicts_on_slack == "true" && steps.merge.outputs.merge_status == 'conflict'
+        if: always() && env.notify_conflicts_on_slack == 'true' && steps.merge.outputs.merge_status == 'conflict'
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.BRANCH_AUTO_MERGER_SLACK_APP_WEBHOOK }}
