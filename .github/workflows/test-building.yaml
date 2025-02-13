@@ -3,7 +3,7 @@ name: Test Building Go Binary
 on:
   workflow_run:
     workflows:
-      - merge-main-to-special-branch
+      - "Auto-Merge main to special branches"
     types:
       - completed
   pull_request:
