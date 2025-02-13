@@ -100,6 +100,7 @@ jobs:
           fi
 
       - name: Merge and Push changes
+        id: "merge-and-push-changes"
         if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outputs.merge_status == 'success'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -109,6 +110,7 @@ jobs:
 
           skip-checks: true"
           git push -u origin ${{ matrix.release_branch }}
+          echo "merge_commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
       - name: Report merge status
         if: always()
