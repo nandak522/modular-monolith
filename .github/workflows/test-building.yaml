@@ -1,12 +1,11 @@
 name: Test Building Go Binary
 
 on:
-  workflow_dispatch:
-    inputs:
-      commit_sha:
-        description: 'Commit SHA to checkout'
-        required: true
-
+  workflow_run:
+    workflows:
+      - "Auto-Merge main to special branches"
+    types:
+      - completed
   pull_request:
 
 jobs:
@@ -19,11 +18,23 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+    - name: Retrieve merge commit SHA from auto-merge workflow artifact
+      uses: actions/download-artifact@v4
+      if: github.event_name  == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+      with:
+        name: merge-commit
+        run-id: ${{ github.event.workflow_run.id }}
+
+    - name: Get commit hash
+      id: get_commit
+      if: github.event_name  == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+      run: echo "commit_sha=$(cat merge_commit.txt)" >> $GITHUB_OUTPUT
+
     - name: Checkout code
       uses: actions/checkout@v4
       continue-on-error: false
       with:
-        ref: ${{ inputs.commit_sha || github.sha }} # Use input SHA for dispatch, normal SHA for push
+        ref: ${{ steps.get_commit.outputs.commit_sha || github.sha }} # Use SHA for upstream workflow run, normal SHA for push
         fetch-depth: 0
 
     - name: Set up Go
