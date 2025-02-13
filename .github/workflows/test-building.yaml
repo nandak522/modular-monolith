@@ -21,8 +21,10 @@ jobs:
     - name: Determine Commit SHA
       id: get_commit
       run: |
-        if [ "${{ github.event_name }}" == "workflow_run" && github.event.workflow_run.conclusion == 'success' ]; then
+        if [ "${{ github.event_name }}" == "workflow_run" && "${{ github.event.workflow_run.conclusion }}" == 'success' ]; then
           echo "Triggered by workflow_run"
+          JOBS=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/jobs)
+          echo "JOBS=$JOBS"
           COMMIT_SHA=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/jobs \
             | jq -r '.jobs[].steps[] | select(.name=="Merge and Push changes") | .completed_at' | tail -n1)
         else
