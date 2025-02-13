@@ -110,7 +110,7 @@ jobs:
 
           skip-checks: true"
           git push -u origin ${{ matrix.release_branch }}
-          echo "$(git rev-parse HEAD)" > merge_commit.txt
+          echo "$(git rev-parse HEAD)" > auto_merge_commit.txt
 
       - name: Record Merge Commit Hash
         uses: actions/upload-artifact@v4
