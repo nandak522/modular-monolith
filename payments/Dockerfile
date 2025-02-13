@@ -1,4 +1,4 @@
-FROM golang:1.24 as builder
+FROM golang:1.24 AS builder
 ENV USER=appuser \
     UID=10001 \
     GO111MODULE=on \
@@ -21,7 +21,7 @@ RUN cd /app && \
     go mod download && \
     go build -ldflags="-s -w" -a -o server ./cmd/server
 
-FROM ubuntu:23.04
+FROM ubuntu:24.04
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 ENV DEBIAN_FRONTEND=noninteractive \
