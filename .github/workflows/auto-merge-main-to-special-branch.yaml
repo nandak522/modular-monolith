@@ -10,9 +10,6 @@ env:
 
 jobs:
   merge-main-to-special-branch:
-    permissions:
-      actions: write
-      contents: write
     strategy:
       matrix:
         release_branch:
@@ -25,6 +22,7 @@ jobs:
     continue-on-error: false
 
     steps:
+
       - name: Generate App Token
         uses: actions/create-github-app-token@v1
         id: app-token
@@ -112,7 +110,13 @@ jobs:
 
           skip-checks: true"
           git push -u origin ${{ matrix.release_branch }}
-          echo "merge_commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          echo "merge_commit=$(git rev-parse HEAD)"  > merge_commit.txt
+
+      - name: Record Merge Commit Hash
+        uses: actions/upload-artifact@v4
+        with:
+          name: merge-commit
+          path: merge_commit.txt
 
       - name: Report merge status
         if: always()
@@ -135,13 +139,6 @@ jobs:
             echo "Unexpected status for ${{ matrix.release_branch }}." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-
-      - name: Trigger `Test Building Go Binary` Workflow
-        if: steps.merge_and_push_changes.outputs.merge_commit != ''
-        run: |
-          gh workflow run "Test Building Go Binary" -f commit_sha=${{ steps.merge_and_push_changes.outputs.merge_commit }}
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Find commit author in Slack
         if: always() && env.notify_conflicts_on_slack == 'true' && steps.merge.outputs.merge_status == 'conflict'
