@@ -1,6 +1,11 @@
 name: Test Building Go Binary
 
 on:
+  workflow_run:
+    workflows:
+      - merge-main-to-special-branch
+    types:
+      - completed
   pull_request:
 
 jobs:
