@@ -23,15 +23,12 @@ jobs:
       run: |
         if [ "${{ github.event_name }}" == "workflow_run" && "${{ github.event.workflow_run.conclusion }}" == 'success' ]; then
           echo "Triggered by workflow_run"
-          JOBS=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/jobs)
-          echo "JOBS=$JOBS"
-          COMMIT_SHA=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/jobs \
-            | jq -r '.jobs[].steps[] | select(.name=="Merge and Push changes") | .completed_at' | tail -n1)
+          echo "COMMIT_SHA=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/jobs \
+            | jq -r '.jobs[].steps[] | select(.name=="Merge and Push changes") | .completed_at' | tail -n1)" >> $GITHUB_ENV
         else
           echo "Triggered by push"
-          COMMIT_SHA=${{ github.sha }}
+          echo "COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
         fi
-        echo "COMMIT_SHA=$COMMIT_SHA" >> $GITHUB_ENV
       env:
         GH_TOKEN: ${{ github.token }}
     - name: Checkout code
