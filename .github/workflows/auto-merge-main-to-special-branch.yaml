@@ -100,7 +100,7 @@ jobs:
           fi
 
       - name: Merge and Push changes
-        id: "merge-and-push-changes"
+        id: "merge_and_push_changes"
         if: steps.check_branch.outputs.branch_exists == 'true' && steps.merge.outputs.merge_status == 'success'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
