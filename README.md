@@ -10,4 +10,4 @@ This monolithic repo hosts two independent Golang services, `products` and `paym
 - [x] `payments` service runs at `9090`
     - [x] Graceful Termination
 - [x] dynamic log level adjustment for each service.
-- [x] auto-merging of main branch to a few special branches via a Github App
+- [x] auto-merging of main branch to a configurable list of special branches via a Github App
