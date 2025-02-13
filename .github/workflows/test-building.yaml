@@ -18,17 +18,18 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+
     - name: Retrieve merge commit SHA from auto-merge workflow artifact
       uses: actions/download-artifact@v4
-      if: github.event_name  == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+      if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
       with:
-        name: merge-commit
+        name: auto-merge-commit
         run-id: ${{ github.event.workflow_run.id }}
 
     - name: Get commit hash
       id: get_commit
-      if: github.event_name  == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
-      run: echo "commit_sha=$(cat merge_commit.txt)" >> $GITHUB_OUTPUT
+      if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+      run: echo "commit_sha=$(cat auto_merge_commit.txt)" >> $GITHUB_OUTPUT
 
     - name: Checkout code
       uses: actions/checkout@v4
