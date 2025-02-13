@@ -18,6 +18,20 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+    - name: Determine Commit SHA
+      id: get_commit
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_run" ]; then
+          echo "Triggered by workflow_run"
+          COMMIT_SHA=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/jobs \
+            | jq -r '.jobs[].steps[] | select(.name=="Merge and Push changes") | .completed_at' | tail -n1)
+        else
+          echo "Triggered by push"
+          COMMIT_SHA=${{ github.sha }}
+        fi
+        echo "COMMIT_SHA=$COMMIT_SHA" >> $GITHUB_ENV
+      env:
+        GH_TOKEN: ${{ github.token }}
     - name: Checkout code
       uses: actions/checkout@v4
       continue-on-error: false
