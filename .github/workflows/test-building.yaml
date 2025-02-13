@@ -1,4 +1,4 @@
-name: Test Building
+name: Test Building Go Binary
 
 on:
   pull_request:
