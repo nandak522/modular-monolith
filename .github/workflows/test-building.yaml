@@ -1,11 +1,12 @@
 name: Test Building Go Binary
 
 on:
-  workflow_run:
-    workflows:
-      - "Auto-Merge main to special branches"
-    types:
-      - completed
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to checkout'
+        required: true
+
   pull_request:
 
 jobs:
@@ -18,17 +19,11 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - name: Determine Commit SHA
-      id: get_commit
-      run: |
-        echo "WORKFLOW_RUN=${{ github.event.workflow_run }}" >> $GITHUB_OUTPUT
-        echo "COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
-      env:
-        GH_TOKEN: ${{ github.token }}
     - name: Checkout code
       uses: actions/checkout@v4
       continue-on-error: false
       with:
+        ref: ${{ inputs.commit_sha || github.sha }}  # Use input SHA for dispatch, normal SHA for push
         fetch-depth: 0
 
     - name: Set up Go
