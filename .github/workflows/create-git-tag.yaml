@@ -63,5 +63,5 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: "refs/tags/${{ matrix.module }}-${{ steps.extract-version.outputs.VERSION }}",
-            sha: ${{ steps.record_commit_sha.outputs.commit_sha }}
+            sha: "${{ steps.record_commit_sha.outputs.commit_sha }}"
           })
