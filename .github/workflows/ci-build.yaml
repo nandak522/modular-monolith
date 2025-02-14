@@ -1,6 +1,11 @@
 name: Continuous Integration
 
 on:
+  workflow_run:
+    workflows:
+      - "Auto-Merge main to special branches"
+    types:
+      - completed
   push:
     branches:
       - release
@@ -16,9 +21,25 @@ jobs:
         module: ['products', 'payments']
 
     steps:
+    - name: Retrieve merge commit SHA from auto-merge workflow artifact (if required)
+      uses: dawidd6/action-download-artifact@v2
+      if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+      with:
+        name: auto-merge-commit
+        run_id: ${{ github.event.workflow_run.id }}
+        workflow: ${{ github.event.workflow_run.workflow_id }}
+
+    - name: Get commit hash
+      id: get_commit
+      if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+      run: echo "commit_sha=$(cat auto_merge_commit.txt)" >> $GITHUB_OUTPUT
+
     - name: Checkout code
       uses: actions/checkout@v4
       continue-on-error: false
+      with:
+        ref: ${{ steps.get_commit.outputs.commit_sha || github.sha }} # Use SHA for upstream workflow run, normal SHA for push
+        fetch-depth: 0
 
     - name: Set up Go
       continue-on-error: false
