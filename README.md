@@ -1,7 +1,8 @@
 # Modular Monolith
 
 This monolithic repo hosts two independent Golang services, `products` and `payments`, as separate modules for independent deployments.
-
+* `main` is the default branch. Treated as trunk/integration branch. Doesn't need to be stable all the time.
+* `release` is the release branch on which releases are made. Have to be stable all the time.
 
 ## Notable features
 

@@ -3,7 +3,7 @@ name: Create Git Tag
 on:
   push:
     branches:
-      - main
+      - release
     paths:
     - '**/version.go'
 
@@ -12,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: ['products', 'payments']
+        module:
+          - products
+          - payments
 
     steps:
     - name: Checkout source code
