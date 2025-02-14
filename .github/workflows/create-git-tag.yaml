@@ -22,7 +22,7 @@ jobs:
           - payments
 
     steps:
-    - name: Retrieve merge commit SHA from auto-merge workflow artifact (if required)
+    - name: Download auto-merge-commit artifact (if required)
       uses: dawidd6/action-download-artifact@v2
       if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
       with:
@@ -30,16 +30,20 @@ jobs:
         run_id: ${{ github.event.workflow_run.id }}
         workflow: ${{ github.event.workflow_run.workflow_id }}
 
-    - name: Get commit hash
+    - name: Get commit SHA from auto-merge-commit artifact (if required)
       id: get_commit
       if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
-      run: echo "commit_sha=$(cat auto_merge_commit.txt)" >> $GITHUB_OUTPUT
+      run: echo "auto_merge_commit_sha=$(cat auto_merge_commit.txt)" >> $GITHUB_OUTPUT
+
+    - name: Record Commit SHA
+      id: record_commit_sha
+      run: echo "commit_sha=${{ steps.get_commit.outputs.auto_merge_commit_sha || github.sha }}" >> $GITHUB_OUTPUT  # Use SHA for upstream workflow run, normal SHA for push
 
     - name: Checkout code
       uses: actions/checkout@v4
       continue-on-error: false
       with:
-        ref: ${{ steps.get_commit.outputs.commit_sha || github.sha }} # Use SHA for upstream workflow run, normal SHA for push
+        ref: ${{ steps.record_commit_sha.outputs.commit_sha }}
         fetch-depth: 0
 
     - name: Extract Version
@@ -59,5 +63,5 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: "refs/tags/${{ matrix.module }}-${{ steps.extract-version.outputs.VERSION }}",
-            sha: ${{ steps.get_commit.outputs.commit_sha || context.sha }} # Use SHA for upstream workflow run, normal SHA for push
+            sha: ${{ steps.record_commit_sha.outputs.commit_sha }}
           })
