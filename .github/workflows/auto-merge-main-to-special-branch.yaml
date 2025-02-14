@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         release_branch:
+          - release
           - restricted
             # Add more special branches as needed
 
