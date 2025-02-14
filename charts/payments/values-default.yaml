@@ -24,7 +24,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: payments-0.1.10
+        imageTag: payments-0.1.16
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
