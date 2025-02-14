@@ -243,40 +243,40 @@ func (a *App) initConfig(configPath string) {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		a.Logger.Error(fmt.Sprintf("Error reading config file: %s\n", err))
+		a.Logger.Error(fmt.Sprintf("Error reading config file: %s", err))
 		os.Exit(1)
 	}
 	if err := viper.Unmarshal(&a.Config); err != nil {
-		a.Logger.Error(fmt.Sprintf("Error unmarshalling config: %s\n", err))
+		a.Logger.Error(fmt.Sprintf("Error unmarshalling config: %s", err))
 		os.Exit(1)
 	}
 	prometheus.MustRegister(httpRequests, httpRequestErrors, httpRequestDuration)
 }
 
 func main() {
-	// Parse command-line arguments
-	configPath := flag.String("config", "config.yaml", "Path to the configuration file")
+	configPath := flag.String("config", "config/local.yaml", "Path to the configuration file")
 	flag.Parse()
 
-	// Create an instance of the App struct
 	app := &App{
 		Config: &Config{},
 	}
-	// Initialize configuration
-	app.initConfig(*configPath)
 
-	logLevel, err := getLogLevelFromString(app.Config.LogLevel)
-	if err != nil {
-		fmt.Println(err, " Resorting to INFO log-level.")
-		logLevel = slog.LevelInfo
-	}
-	levelVar := new(slog.LevelVar) // INFO
-	levelVar.Set(logLevel)
 	loggerOptions := &slog.HandlerOptions{
-		Level: levelVar,
+		Level: slog.LevelInfo, // Default to INFO until config is read
 	}
 	app.Logger = slog.New(slog.NewJSONHandler(os.Stdout, loggerOptions))
 	slog.SetDefault(app.Logger)
+
+	app.initConfig(*configPath)
+
+	// Update log level after config is read
+	if logLevel, err := getLogLevelFromString(app.Config.LogLevel); err != nil {
+		app.Logger.Warn(fmt.Sprintf("Invalid log level %q, keeping default INFO level: %v", app.Config.LogLevel, err))
+	} else {
+		levelVar := new(slog.LevelVar)
+		levelVar.Set(logLevel)
+		loggerOptions.Level = levelVar
+	}
 
 	app.Logger.Debug(fmt.Sprintf("Application Config: %+v", app.Config))
 
