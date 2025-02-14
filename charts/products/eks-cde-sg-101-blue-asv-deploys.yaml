@@ -1,0 +1,1311 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-maxwell-dlq-worker
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-maxwell-dlq-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-maxwell-dlq-worker"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-maxwell-dlq-worker"},"name":"asv-maxwell-dlq-worker","namespace":"asv"},"spec":{"progressDeadlineSeconds":600,"replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-maxwell-dlq-worker"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-maxwell-dlq-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-maxwell-dlq-worker","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-maxwell-dlq-worker"},"name":"asv-maxwell-dlq-worker"},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-maxwell-dlq-worker"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"automountServiceAccountToken":true,"containers":[{"args":["api"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}},{"name":"WORKER_NAME","value":"asv-maxwell-dlq-worker"}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:worker-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"worker","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"200Mi"},"requests":{"cpu":"200m","memory":"100Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":60}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-maxwell-dlq-worker
+    creationTimestamp: "2024-04-25T04:46:56Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-maxwell-dlq-worker
+    name: asv-maxwell-dlq-worker
+    namespace: asv
+    resourceVersion: "28484163"
+    uid: ffbabffa-5d11-4488-aa5d-fc0ac5f647cd
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-maxwell-dlq-worker
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-maxwell-dlq-worker
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-maxwell-dlq-worker
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-maxwell-dlq-worker
+        name: asv-maxwell-dlq-worker
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                    - asv-maxwell-dlq-worker
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - api
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: WORKER_NAME
+            value: asv-maxwell-dlq-worker
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:worker-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: worker
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 200m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 60
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2024-04-25T04:46:56Z"
+      lastUpdateTime: "2024-04-25T04:46:56Z"
+      message: ReplicaSet "asv-maxwell-dlq-worker-db5d79589" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2024-06-14T02:05:29Z"
+      lastUpdateTime: "2024-06-14T02:05:29Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-maxwell-worker
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-maxwell-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-maxwell-worker"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-maxwell-worker"},"name":"asv-maxwell-worker","namespace":"asv"},"spec":{"progressDeadlineSeconds":600,"replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-maxwell-worker"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-maxwell-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-maxwell-worker","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-maxwell-worker"},"name":"asv-maxwell-worker"},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-maxwell-worker"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"automountServiceAccountToken":true,"containers":[{"args":["api"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}},{"name":"WORKER_NAME","value":"asv-maxwell-worker"}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:worker-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"worker","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"200Mi"},"requests":{"cpu":"200m","memory":"100Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":60}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-maxwell-worker
+    creationTimestamp: "2024-04-25T04:46:57Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-maxwell-worker
+    name: asv-maxwell-worker
+    namespace: asv
+    resourceVersion: "27933635"
+    uid: 66baee9a-6c2a-43a8-aa90-94b46f5ab7ee
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-maxwell-worker
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-maxwell-worker
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-maxwell-worker
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-maxwell-worker
+        name: asv-maxwell-worker
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                    - asv-maxwell-worker
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - api
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: WORKER_NAME
+            value: asv-maxwell-worker
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:worker-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: worker
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 200m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 60
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2024-04-25T04:46:57Z"
+      lastUpdateTime: "2024-04-25T04:46:57Z"
+      message: ReplicaSet "asv-maxwell-worker-664fc78fc" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2024-06-13T08:30:04Z"
+      lastUpdateTime: "2024-06-13T08:30:04Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-outbox-worker
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-outbox-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-outbox-worker"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-outbox-worker"},"name":"asv-outbox-worker","namespace":"asv"},"spec":{"progressDeadlineSeconds":600,"replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-outbox-worker"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-outbox-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-outbox-worker","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-outbox-worker"},"name":"asv-outbox-worker"},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-outbox-worker"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"automountServiceAccountToken":true,"containers":[{"args":["api"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"ASV_PARALLELOUTBOX_PROCESSORENABLED","value":"false"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:outboxworker-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"outbox-worker","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"200Mi"},"requests":{"cpu":"120m","memory":"100Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"serviceAccountName":"asv-service-account","terminationGracePeriodSeconds":60}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-outbox-worker
+    creationTimestamp: "2024-04-25T04:46:57Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-outbox-worker
+    name: asv-outbox-worker
+    namespace: asv
+    resourceVersion: "27308285"
+    uid: e66a6f9d-de09-44a4-a426-fae848284207
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-outbox-worker
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-outbox-worker
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-outbox-worker
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-outbox-worker
+        name: asv-outbox-worker
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                    - asv-outbox-worker
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - api
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: ASV_PARALLELOUTBOX_PROCESSORENABLED
+            value: "false"
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:outboxworker-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: outbox-worker
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 120m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: asv-service-account
+        serviceAccountName: asv-service-account
+        terminationGracePeriodSeconds: 60
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2024-04-25T04:46:57Z"
+      lastUpdateTime: "2024-04-25T04:46:57Z"
+      message: ReplicaSet "asv-outbox-worker-7d445f5995" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2024-06-12T11:49:33Z"
+      lastUpdateTime: "2024-06-12T11:49:33Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-paralleloutbox-worker
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-paralleloutbox-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-paralleloutbox-worker"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-paralleloutbox-worker"},"name":"asv-paralleloutbox-worker","namespace":"asv"},"spec":{"progressDeadlineSeconds":600,"replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-paralleloutbox-worker"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-paralleloutbox-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-paralleloutbox-worker","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-paralleloutbox-worker"},"name":"asv-paralleloutbox-worker"},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-paralleloutbox-worker"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"automountServiceAccountToken":true,"containers":[{"args":["api"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"ASV_OUTBOX_PROCESSORENABLED","value":"false"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:outboxworker-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"worker","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"500Mi"},"requests":{"cpu":"100m","memory":"250Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"serviceAccountName":"asv-service-account","terminationGracePeriodSeconds":60}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-paralleloutbox-worker
+    creationTimestamp: "2024-04-25T04:46:57Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-paralleloutbox-worker
+    name: asv-paralleloutbox-worker
+    namespace: asv
+    resourceVersion: "28485913"
+    uid: d0cea9d0-6bce-4339-9010-4509c261d692
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-paralleloutbox-worker
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-paralleloutbox-worker
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-paralleloutbox-worker
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-paralleloutbox-worker
+        name: asv-paralleloutbox-worker
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                    - asv-paralleloutbox-worker
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - api
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: ASV_OUTBOX_PROCESSORENABLED
+            value: "false"
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:outboxworker-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: worker
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 250Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: asv-service-account
+        serviceAccountName: asv-service-account
+        terminationGracePeriodSeconds: 60
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2024-04-25T04:46:57Z"
+      lastUpdateTime: "2024-04-25T04:46:57Z"
+      message: ReplicaSet "asv-paralleloutbox-worker-5bd79555dc" has successfully
+        progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2024-06-14T02:08:58Z"
+      lastUpdateTime: "2024-06-14T02:08:58Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-parity-checker-worker
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-parity-checker-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-parity-checker-worker"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-parity-checker-worker"},"name":"asv-parity-checker-worker","namespace":"asv"},"spec":{"progressDeadlineSeconds":600,"replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-parity-checker-worker"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-parity-checker-worker","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-parity-checker-worker","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-parity-checker-worker"},"name":"asv-parity-checker-worker"},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-parity-checker-worker"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"automountServiceAccountToken":true,"containers":[{"args":["worker"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}},{"name":"WORKER_NAME","value":"asv-parity-checker-worker"}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:worker-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"worker","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"200Mi"},"requests":{"cpu":"100m","memory":"50Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":60}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-parity-checker-worker
+    creationTimestamp: "2024-04-25T04:46:58Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-parity-checker-worker
+    name: asv-parity-checker-worker
+    namespace: asv
+    resourceVersion: "28484107"
+    uid: b93ef9fa-1ef6-42ed-ab72-549349c6f7a0
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-parity-checker-worker
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-parity-checker-worker
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-parity-checker-worker
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-parity-checker-worker
+        name: asv-parity-checker-worker
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                    - asv-parity-checker-worker
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - worker
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: WORKER_NAME
+            value: asv-parity-checker-worker
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:worker-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: worker
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 60
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2024-04-25T04:46:58Z"
+      lastUpdateTime: "2024-04-25T04:46:58Z"
+      message: ReplicaSet "asv-parity-checker-worker-85c846b497" has successfully
+        progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2024-06-14T02:05:25Z"
+      lastUpdateTime: "2024-06-14T02:05:25Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-web
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "4"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-web","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-web"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-web"},"name":"asv-web","namespace":"asv"},"spec":{"minReadySeconds":30,"progressDeadlineSeconds":600,"replicas":1,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-web"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-web","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-web","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-web"},"name":"asv-web"},"spec":{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-web"]}]},"topologyKey":"kubernetes.io/hostname"}]}},"automountServiceAccountToken":true,"containers":[{"args":["api"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:api-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"web","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"500Mi"},"requests":{"cpu":"1500m","memory":"275Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":60}}}}
+      kubernetes.io/change-cause: kubectl patch deployment asv-web --kubeconfig=/home/spinnaker/.hal/default/staging/dependencies/2054179555-config
+        --context=prod-cde-sg-cell-101-blue --namespace=asv --record=true --type=strategic
+        --patch={"spec":{"template":{"metadata":{"annotations":{"rotation.time":"Wed
+        Jun 05 05:44:12 GMT 2024"}},"spec":{"containers":[{"image":"c.rzp.io/razorpay/asv:api--335c381a8e66fcf6b00ec7138aeb4670f5a6e7fb","name":"sample"}]}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-web
+    creationTimestamp: "2024-04-25T04:46:56Z"
+    generation: 6
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-web
+    name: asv-web
+    namespace: asv
+    resourceVersion: "32527326"
+    uid: bdf73c45-2e6f-48b0-840c-b4532c956aaa
+  spec:
+    minReadySeconds: 30
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-web
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-web
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-web
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+          rotation.time: Wed Jun 05 05:44:12 GMT 2024
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-web
+        name: asv-web
+      spec:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: name
+                  operator: In
+                  values:
+                  - asv-web
+              topologyKey: kubernetes.io/hostname
+        automountServiceAccountToken: true
+        containers:
+        - image: c.rzp.io/razorpay/asv:api--335c381a8e66fcf6b00ec7138aeb4670f5a6e7fb
+          imagePullPolicy: IfNotPresent
+          name: sample
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        - args:
+          - api
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:api-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: web
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 60
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2024-06-19T08:38:06Z"
+      lastUpdateTime: "2024-06-19T08:38:06Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2024-06-19T08:48:07Z"
+      lastUpdateTime: "2024-06-19T08:48:07Z"
+      message: ReplicaSet "asv-web-659c68967" has timed out progressing.
+      reason: ProgressDeadlineExceeded
+      status: "False"
+      type: Progressing
+    observedGeneration: 6
+    readyReplicas: 1
+    replicas: 2
+    unavailableReplicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-web-baseline
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-web-baseline","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-web-baseline"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-web-baseline"},"name":"asv-web-baseline","namespace":"asv"},"spec":{"minReadySeconds":30,"progressDeadlineSeconds":600,"replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-web-baseline"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-web-baseline","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-web-baseline","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-web-baseline"},"name":"asv-web-baseline"},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-web-baseline"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"automountServiceAccountToken":true,"containers":[{"args":["api"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:api-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"web","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"200Mi"},"requests":{"cpu":"500m","memory":"100Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":60}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-web-baseline
+    creationTimestamp: "2024-04-25T04:46:55Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-web-baseline
+    name: asv-web-baseline
+    namespace: asv
+    resourceVersion: "395881"
+    uid: 261e0e34-852b-4cf7-8e06-c9e675100ca5
+  spec:
+    minReadySeconds: 30
+    progressDeadlineSeconds: 600
+    replicas: 0
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-web-baseline
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-web-baseline
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-web-baseline
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-web-baseline
+        name: asv-web-baseline
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                    - asv-web-baseline
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - api
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:api-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: web
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 500m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 60
+  status:
+    conditions:
+    - lastTransitionTime: "2024-04-25T04:46:55Z"
+      lastUpdateTime: "2024-04-25T04:46:55Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2024-04-25T04:46:55Z"
+      lastUpdateTime: "2024-04-25T04:46:55Z"
+      message: ReplicaSet "asv-web-baseline-59c8b4b67c" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-web-canary
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-web-canary","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-web-canary"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-web-canary"},"name":"asv-web-canary","namespace":"asv"},"spec":{"minReadySeconds":30,"progressDeadlineSeconds":600,"replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-web-canary"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-web-canary","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-web-canary","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-web-canary"},"name":"asv-web-canary"},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-web-canary"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"automountServiceAccountToken":true,"containers":[{"args":["api"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:api-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"web","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"200Mi"},"requests":{"cpu":"500m","memory":"100Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":60}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-web-canary
+    creationTimestamp: "2024-04-25T04:46:55Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-web-canary
+    name: asv-web-canary
+    namespace: asv
+    resourceVersion: "395888"
+    uid: 8327f0ba-521b-46a6-b445-15878d373b4f
+  spec:
+    minReadySeconds: 30
+    progressDeadlineSeconds: 600
+    replicas: 0
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-web-canary
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-web-canary
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-web-canary
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-web-canary
+        name: asv-web-canary
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                    - asv-web-canary
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - api
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:api-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: web
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 500m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 60
+  status:
+    conditions:
+    - lastTransitionTime: "2024-04-25T04:46:55Z"
+      lastUpdateTime: "2024-04-25T04:46:55Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2024-04-25T04:46:55Z"
+      lastUpdateTime: "2024-04-25T04:46:55Z"
+      message: ReplicaSet "asv-web-canary-6d75c5f954" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      artifact.spinnaker.io/location: asv
+      artifact.spinnaker.io/name: asv-web-filter
+      artifact.spinnaker.io/type: kubernetes/deployment
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-web-filter","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-web-filter"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-web-filter"},"name":"asv-web-filter","namespace":"asv"},"spec":{"minReadySeconds":30,"progressDeadlineSeconds":600,"replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"name":"asv-web-filter"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"artifact.spinnaker.io/location":"asv","artifact.spinnaker.io/name":"asv-web-filter","artifact.spinnaker.io/type":"kubernetes/deployment","moniker.spinnaker.io/application":"prod-asv","moniker.spinnaker.io/cluster":"deployment asv-web-filter","prometheus.app/port":"9401","prometheus.app/scrape":"true"},"labels":{"app.kubernetes.io/managed-by":"spinnaker","app.kubernetes.io/name":"prod-asv","bu":"platform","name":"asv-web-filter"},"name":"asv-web-filter"},"spec":{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchExpressions":[{"key":"name","operator":"In","values":["asv-web-filter"]}]},"topologyKey":"kubernetes.io/hostname"}]}},"automountServiceAccountToken":true,"containers":[{"args":["api"],"env":[{"name":"APP_ENV","value":"prod"},{"name":"JAEGER_HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"spec.nodeName"}}}],"envFrom":[{"secretRef":{"name":"asv"}}],"image":"c.rzp.io/razorpay/asv:api-65ef08c344840a423e77f72f769791c809c6fd87","imagePullPolicy":"IfNotPresent","livenessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"name":"web","ports":[{"containerPort":9400,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/app/probe.sh"]},"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":2},"resources":{"limits":{"memory":"1200Mi"},"requests":{"cpu":"2000m","memory":"800Mi"}}}],"dnsConfig":{"options":[{"name":"ndots","value":"1"}]},"dnsPolicy":"ClusterFirst","nodeSelector":{"node.kubernetes.io/worker-payments":""},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":60}}}}
+      moniker.spinnaker.io/application: prod-asv
+      moniker.spinnaker.io/cluster: deployment asv-web-filter
+    creationTimestamp: "2024-04-25T04:46:56Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/managed-by: spinnaker
+      app.kubernetes.io/name: prod-asv
+      bu: platform
+      name: asv-web-filter
+    name: asv-web-filter
+    namespace: asv
+    resourceVersion: "395895"
+    uid: 3a04074e-8109-49c2-9774-d226a3d1e215
+  spec:
+    minReadySeconds: 30
+    progressDeadlineSeconds: 600
+    replicas: 0
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: asv-web-filter
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          artifact.spinnaker.io/location: asv
+          artifact.spinnaker.io/name: asv-web-filter
+          artifact.spinnaker.io/type: kubernetes/deployment
+          moniker.spinnaker.io/application: prod-asv
+          moniker.spinnaker.io/cluster: deployment asv-web-filter
+          prometheus.app/port: "9401"
+          prometheus.app/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/managed-by: spinnaker
+          app.kubernetes.io/name: prod-asv
+          bu: platform
+          name: asv-web-filter
+        name: asv-web-filter
+      spec:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: name
+                  operator: In
+                  values:
+                  - asv-web-filter
+              topologyKey: kubernetes.io/hostname
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - api
+          env:
+          - name: APP_ENV
+            value: prod
+          - name: JAEGER_HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          envFrom:
+          - secretRef:
+              name: asv
+          image: c.rzp.io/razorpay/asv:api-65ef08c344840a423e77f72f769791c809c6fd87
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: web
+          ports:
+          - containerPort: 9400
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /app/probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              memory: 1200Mi
+            requests:
+              cpu: "2"
+              memory: 800Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "1"
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node.kubernetes.io/worker-payments: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 60
+  status:
+    conditions:
+    - lastTransitionTime: "2024-04-25T04:46:56Z"
+      lastUpdateTime: "2024-04-25T04:46:56Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2024-04-25T04:46:56Z"
+      lastUpdateTime: "2024-04-25T04:46:56Z"
+      message: ReplicaSet "asv-web-filter-6b4b47cc7d" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+kind: List
+metadata:
+  resourceVersion: ""

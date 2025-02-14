@@ -1,0 +1,18 @@
+apiVersion: v1
+automountServiceAccountToken: false
+imagePullSecrets:
+- name: registry
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2024-04-30T12:12:13Z"
+  labels:
+    kustomize.toolkit.fluxcd.io/name: spinnaker-integration
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    name: spinnaker
+  name: spinnaker
+  namespace: spinnaker
+  resourceVersion: "1253655"
+  uid: 4858ac49-9609-4d56-9270-bc169bf2a920
+secrets:
+- name: spinnaker
+- name: spinnaker-token

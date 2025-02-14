@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: capture-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-4"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: capture-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-3"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: capture-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-2"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+subjects:
+- kind: ServiceAccount
+  name: capture-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+roleRef:
+  kind: Role
+  name: capture-replicas-counts
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pre-upgrade-capture-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  template:
+    spec:
+      serviceAccountName: capture-replicas-counts
+      containers:
+      - name: capture-replicas-counts
+        image: nanda/just-helm-in-docker:v7
+        env:
+          - name: NAMESPACE
+            value: {{ .Values.namespace.name }}
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            set -o xtrace
+            set -o nounset
+            set -o pipefail
+
+            CONFIGMAP_NAME='replicas-counts'
+            OUTPUT_FILE="$CONFIGMAP_NAME.yaml"
+
+            echo 'replicasCounts:' > $OUTPUT_FILE
+            for deployment in $(kubectl get deployments -n $NAMESPACE -o jsonpath='{.items[*].metadata.name}'); do
+              replicas=$(kubectl get deployment $deployment -n $NAMESPACE -o jsonpath='{.spec.replicas}')
+              echo "  $deployment: $replicas" >> $OUTPUT_FILE
+            done
+
+            cat $OUTPUT_FILE
+            which yq
+            ls -ltrha $(which yq)
+
+            # Create config-map only if there are keys in replicasCounts
+            if [ $(yq e '.replicasCounts | length' $OUTPUT_FILE) -gt 0 ]; then
+              kubectl create --save-config configmap "$CONFIGMAP_NAME" --from-file="$OUTPUT_FILE" --namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+            fi
+
+            exit 0
+
+      restartPolicy: OnFailure

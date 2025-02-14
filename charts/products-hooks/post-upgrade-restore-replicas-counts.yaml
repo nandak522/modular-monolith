@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: restore-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"  # Ensure this runs before cleanup-of-replicas-counts
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: restore-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "2"  # Ensure this runs before cleanup-of-replicas-counts
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - scale
+  - patch
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: restore-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "3"  # Ensure this runs before cleanup-of-replicas-counts
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+subjects:
+- kind: ServiceAccount
+  name: restore-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+roleRef:
+  kind: Role
+  name: restore-replicas-counts
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-upgrade-restore-replicas-counts
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "4"  # Ensure this runs before cleanup-of-replicas-counts
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  template:
+    spec:
+      serviceAccountName: restore-replicas-counts
+      containers:
+      - name: restore-replicas-counts
+        image: nanda/just-helm-in-docker:v7
+        env:
+          - name: NAMESPACE
+            value: {{ .Values.namespace.name }}
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            set -o xtrace
+            set -o nounset
+            set -o pipefail
+
+            # Check if the ConfigMap exists and capture its output
+            configmap_output=$(kubectl get configmap replicas-counts --namespace $NAMESPACE --ignore-not-found)
+            if [[ -z "$configmap_output" ]]; then
+              echo "ConfigMap replicas-counts not found, skipping scaling..."
+            else
+              echo "ConfigMap replicas-counts exists, proceeding with scaling..."
+              # Retrieve the ConfigMap data
+              kubectl get configmap replicas-counts --namespace $NAMESPACE -o jsonpath='{.data.replicas-counts\.yaml}' > replicas-counts.yaml
+
+              cat replicas-counts.yaml
+
+              if [ $(yq e '.replicasCounts | length' replicas-counts.yaml) -gt 0 ]; then
+                for kv in $(yq e '.replicasCounts | to_entries | .[] | "\(.key)=\(.value)"' replicas-counts.yaml); do
+                  echo $kv
+                  deployment_name=$(echo $kv | cut -d'=' -f1)
+                  replicas_count=$(echo $kv | cut -d'=' -f2)
+                  echo $deployment_name
+                  echo $replicas_count
+                  kubectl scale deployment $deployment_name --replicas=$replicas_count -n $NAMESPACE
+                done
+              fi
+            fi
+
+            exit 0
+
+      restartPolicy: OnFailure
