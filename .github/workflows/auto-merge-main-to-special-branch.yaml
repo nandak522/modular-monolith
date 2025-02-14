@@ -118,6 +118,7 @@ jobs:
         with:
           name: auto-merge-commit
           path: auto_merge_commit.txt
+          overwrite: true
 
       - name: Report merge status
         if: always()
