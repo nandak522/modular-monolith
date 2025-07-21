@@ -56,6 +56,7 @@ deployments:
       maxUnavailable: "20%"
     replicas: 1 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
     # terminationGracePeriodSeconds: 60
+    weight: "100%"
   - name: products-baseline
     podLabels:
       # prometheus.app/port: "8080"
@@ -109,6 +110,7 @@ deployments:
       maxUnavailable: "20%"
     replicas: 0 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
     # terminationGracePeriodSeconds: 60
+    weight: "0%"
   - name: products-canary
     podLabels:
       # prometheus.app/port: "8080"
@@ -162,6 +164,7 @@ deployments:
       maxUnavailable: "20%"
     replicas: 0 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
     # terminationGracePeriodSeconds: 60
+    weight: "0%"
 configMaps:
   - name: config-plain
     data:
