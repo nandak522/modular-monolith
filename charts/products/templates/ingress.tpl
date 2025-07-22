@@ -16,7 +16,7 @@ spec:
       - name: {{ $currentDeployment.name }}
         port: 80
         scheme: h2c
-        weight: {{ trimSuffix "%" $currentDeployment.weight }}
+        weight: {{ $currentDeployment.trafficWeightPercentage }}
       {{- end }}
 ---
 apiVersion: traefik.io/v1alpha1
@@ -37,5 +37,5 @@ spec:
           name: {{ $currentDeployment.name }}
           namespace: {{ $values.namespace.name }}
           port: 81
-          weight: {{ trimSuffix "%" $currentDeployment.weight }}
+          weight: {{ $currentDeployment.trafficWeightPercentage }}
       {{- end }}
