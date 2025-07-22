@@ -55,21 +55,21 @@ var (
 	httpRequests = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "http_requests_total",
-			Help: "Number of HTTP requests.",
+			Help: "Throughput",
 		},
 		[]string{"path"},
 	)
 	httpRequestErrors = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "http_request_errors_total",
-			Help: "Number of HTTP request errors.",
+			Help: "Errors Count",
 		},
 		[]string{"path"},
 	)
 	httpRequestDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Name:    "http_request_duration_seconds",
-			Help:    "Duration of HTTP requests.",
+			Help:    "Latency",
 			Buckets: []float64{.01, .1, 1, 10},
 		},
 		[]string{"path"},
