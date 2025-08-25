@@ -165,6 +165,168 @@ deployments:
     replicas: 0 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
     # terminationGracePeriodSeconds: 60
     trafficWeightPercentage: "0"
+  - name: new-products
+    podLabels:
+      # prometheus.app/port: "8080"
+      # prometheus.app/scrape: "true"
+    podAnnotations:
+      strategy.spinnaker.io/versioned: "false"
+    # containers is an array. Hence supports multiple containers.
+    containers:
+      - name: products
+        ports:
+          - name: httpport
+            value: 8080
+            servicePort: 80
+            servicePortName: httpport
+            # nodePort: 32758
+        # containerPortName: httpport
+        # containerPort: 8000
+        # internalServicePort: 80
+        # externalNodePort: 32758
+        # servicePortName: httpport
+        imageName: nanda/modular-monolith
+        imageTag: products-0.1.16
+        configMapName: config-plain
+        configFileName: config-file
+        secretName: secrets-plain
+        secretsFileName: secrets-file
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          timeoutSeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+        env:
+          - name: "ADD_FUN"
+            value: "Yes"
+    rollingUpdate:
+      maxSurge: "30%"
+      maxUnavailable: "20%"
+    replicas: 1 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
+    # terminationGracePeriodSeconds: 60
+    trafficWeightPercentage: "100"
+  - name: new-products-baseline
+    podLabels:
+      # prometheus.app/port: "8080"
+      # prometheus.app/scrape: "true"
+    podAnnotations:
+      strategy.spinnaker.io/versioned: "false"
+    # containers is an array. Hence supports multiple containers.
+    containers:
+      - name: products
+        ports:
+          - name: httpport
+            value: 8080
+            servicePort: 80
+            servicePortName: httpport
+            # nodePort: 32758
+        # containerPortName: httpport
+        # containerPort: 8000
+        # internalServicePort: 80
+        # externalNodePort: 32758
+        # servicePortName: httpport
+        imageName: nanda/modular-monolith
+        imageTag: products-0.1.16
+        configMapName: config-plain
+        configFileName: config-file
+        secretName: secrets-plain
+        secretsFileName: secrets-file
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          timeoutSeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+        env:
+          - name: "ADD_FUN"
+            value: "Yes"
+    rollingUpdate:
+      maxSurge: "30%"
+      maxUnavailable: "20%"
+    replicas: 0 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
+    # terminationGracePeriodSeconds: 60
+    trafficWeightPercentage: "0"
+  - name: new-products-canary
+    podLabels:
+      # prometheus.app/port: "8080"
+      # prometheus.app/scrape: "true"
+    podAnnotations:
+      strategy.spinnaker.io/versioned: "false"
+    # containers is an array. Hence supports multiple containers.
+    containers:
+      - name: products
+        ports:
+          - name: httpport
+            value: 8080
+            servicePort: 80
+            servicePortName: httpport
+            # nodePort: 32758
+        # containerPortName: httpport
+        # containerPort: 8000
+        # internalServicePort: 80
+        # externalNodePort: 32758
+        # servicePortName: httpport
+        imageName: nanda/modular-monolith
+        imageTag: products-0.1.16
+        configMapName: config-plain
+        configFileName: config-file
+        secretName: secrets-plain
+        secretsFileName: secrets-file
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          timeoutSeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+        env:
+          - name: "ADD_FUN"
+            value: "Yes"
+    rollingUpdate:
+      maxSurge: "30%"
+      maxUnavailable: "20%"
+    replicas: 0 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
+    # terminationGracePeriodSeconds: 60
+    trafficWeightPercentage: "0"
 configMaps:
   - name: config-plain
     data:
