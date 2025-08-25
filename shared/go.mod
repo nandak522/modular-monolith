@@ -1,3 +1,3 @@
 module github.com/nandak522/modular-monolith/shared
 
-go 1.24
+go 1.25
