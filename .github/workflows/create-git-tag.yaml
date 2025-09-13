@@ -15,6 +15,8 @@ on:
 jobs:
   create-tag:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         module:
@@ -54,7 +56,7 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
       working-directory: ${{ matrix.module }}
 
-    - name: Create Tag
+    - name: Create Versioned Tag
       uses: actions/github-script@v7
       with:
         github-token: "${{ github.token }}"
@@ -65,3 +67,27 @@ jobs:
             ref: "refs/tags/${{ matrix.module }}-${{ steps.extract-version.outputs.VERSION }}",
             sha: "${{ steps.record_commit_sha.outputs.commit_sha }}"
           })
+
+    - name: Create SHA Tag
+      uses: actions/github-script@v7
+      with:
+        github-token: "${{ github.token }}"
+        script: |
+          const moduleName = '${{ matrix.module }}';
+          const sha = '${{ steps.record_commit_sha.outputs.commit_sha }}';
+          const tagRef = `refs/tags/${moduleName}-${sha}`;
+          const shortRef = `tags/${moduleName}-${sha}`;
+          try {
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: tagRef,
+              sha
+            });
+          } catch (error) {
+            if (error.status === 422) {
+              core.info(`Tag ${shortRef} already exists; skipping`);
+            } else {
+              throw error;
+            }
+          }
