@@ -18,11 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: ['products', 'payments']
+        module:
+          - products
+          - payments
 
     steps:
     - name: Download auto-merge-commit artifact (if required)
-      uses: dawidd6/action-download-artifact@v2
+      uses: dawidd6/action-download-artifact@v11
       if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
       with:
         name: auto-merge-commit
@@ -39,7 +41,7 @@ jobs:
       run: echo "commit_sha=${{ steps.get_commit.outputs.auto_merge_commit_sha || github.sha }}" >> $GITHUB_OUTPUT  # Use SHA for upstream workflow run, normal SHA for push
 
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       continue-on-error: false
       with:
         ref: ${{ steps.record_commit_sha.outputs.commit_sha }}
@@ -47,7 +49,7 @@ jobs:
 
     - name: Set up Go
       continue-on-error: false
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: 1.25
         cache: true
@@ -93,7 +95,7 @@ jobs:
 
     - name: Build and push Docker image for git sha
       if: contains(github.event.head_commit.modified, '${{ matrix.module }}')
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: ./${{ matrix.module }}
         push: true
@@ -109,7 +111,7 @@ jobs:
       working-directory: ${{ matrix.module }}
 
     - name: Check for version change and build & push version-specific Docker image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: ./${{ matrix.module }}
         push: true
