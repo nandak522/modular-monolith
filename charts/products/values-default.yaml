@@ -4,11 +4,11 @@ namespace:
 # deployments is an array. Hence supports multiple deployments.
 deployments:
   - name: products
-    podLabels:
-      # prometheus.app/port: "8080"
-      # prometheus.app/scrape: "true"
-    podAnnotations:
-      strategy.spinnaker.io/versioned: "false"
+    # podLabels:
+    #   prometheus.app/port: "8080"
+    #   prometheus.app/scrape: "true"
+    # podAnnotations:
+    #   strategy.spinnaker.io/versioned: "false"
     # containers is an array. Hence supports multiple containers.
     containers:
       - name: products
@@ -58,11 +58,11 @@ deployments:
     # terminationGracePeriodSeconds: 60
     trafficWeightPercentage: "100"
   - name: products-baseline
-    podLabels:
-      # prometheus.app/port: "8080"
-      # prometheus.app/scrape: "true"
-    podAnnotations:
-      strategy.spinnaker.io/versioned: "false"
+    # podLabels:
+    #   prometheus.app/port: "8080"
+    #   prometheus.app/scrape: "true"
+    # podAnnotations:
+    #   strategy.spinnaker.io/versioned: "false"
     # containers is an array. Hence supports multiple containers.
     containers:
       - name: products
@@ -112,11 +112,11 @@ deployments:
     # terminationGracePeriodSeconds: 60
     trafficWeightPercentage: "0"
   - name: products-canary
-    podLabels:
-      # prometheus.app/port: "8080"
-      # prometheus.app/scrape: "true"
-    podAnnotations:
-      strategy.spinnaker.io/versioned: "false"
+    # podLabels:
+    #   prometheus.app/port: "8080"
+    #   prometheus.app/scrape: "true"
+    # podAnnotations:
+    #   strategy.spinnaker.io/versioned: "false"
     # containers is an array. Hence supports multiple containers.
     containers:
       - name: products
@@ -165,12 +165,66 @@ deployments:
     replicas: 0 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
     # terminationGracePeriodSeconds: 60
     trafficWeightPercentage: "0"
+  - name: products-mirror
+    # podLabels:
+    #   prometheus.app/port: "8080"
+    #   prometheus.app/scrape: "true"
+    # podAnnotations:
+    #   strategy.spinnaker.io/versioned: "false"
+    # # containers is an array. Hence supports multiple containers.
+    containers:
+      - name: products
+        ports:
+          - name: httpport
+            value: 8080
+            servicePort: 80
+            servicePortName: httpport
+            # nodePort: 32758
+        # containerPortName: httpport
+        # containerPort: 8000
+        # internalServicePort: 80
+        # externalNodePort: 32758
+        # servicePortName: httpport
+        imageName: nanda/modular-monolith
+        imageTag: products-0.1.16
+        configMapName: config-plain
+        configFileName: config-file
+        secretName: secrets-plain
+        secretsFileName: secrets-file
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          timeoutSeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+        env:
+          - name: "ADD_FUN"
+            value: "Yes"
+    rollingUpdate:
+      maxSurge: "30%"
+      maxUnavailable: "20%"
+    replicas: 1 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
+    # terminationGracePeriodSeconds: 60
+    trafficWeightPercentage: "100"
   - name: new-products
-    podLabels:
-      # prometheus.app/port: "8080"
-      # prometheus.app/scrape: "true"
-    podAnnotations:
-      strategy.spinnaker.io/versioned: "false"
+    # podLabels:
+    #   prometheus.app/port: "8080"
+    #   prometheus.app/scrape: "true"
+    # podAnnotations:
+    #   strategy.spinnaker.io/versioned: "false"
     # containers is an array. Hence supports multiple containers.
     containers:
       - name: products
@@ -220,11 +274,11 @@ deployments:
     # terminationGracePeriodSeconds: 60
     trafficWeightPercentage: "100"
   - name: new-products-baseline
-    podLabels:
-      # prometheus.app/port: "8080"
-      # prometheus.app/scrape: "true"
-    podAnnotations:
-      strategy.spinnaker.io/versioned: "false"
+    # podLabels:
+    #   prometheus.app/port: "8080"
+    #   prometheus.app/scrape: "true"
+    # podAnnotations:
+    #   strategy.spinnaker.io/versioned: "false"
     # containers is an array. Hence supports multiple containers.
     containers:
       - name: products
@@ -274,11 +328,11 @@ deployments:
     # terminationGracePeriodSeconds: 60
     trafficWeightPercentage: "0"
   - name: new-products-canary
-    podLabels:
-      # prometheus.app/port: "8080"
-      # prometheus.app/scrape: "true"
-    podAnnotations:
-      strategy.spinnaker.io/versioned: "false"
+    # podLabels:
+    #   prometheus.app/port: "8080"
+    #   prometheus.app/scrape: "true"
+    # podAnnotations:
+    #   strategy.spinnaker.io/versioned: "false"
     # containers is an array. Hence supports multiple containers.
     containers:
       - name: products
@@ -355,3 +409,5 @@ crons:
     timing: "* * * * */5"
   - name: custom-cron-2
     timing: "* * * * */3"
+
+mirror_percent: 0
