@@ -31,7 +31,9 @@ spec:
         {{- toYaml $currentDeployment.podLabels | nindent 8 }}
         {{- end }}
       annotations:
+        {{- if $currentDeployment.podAnnotations }}
         {{- toYaml $currentDeployment.podAnnotations | nindent 8 -}}
+        {{- end }}
         {{- include "app.checksumAnnotations" $root | nindent 8 }}
     spec:
       {{- if $currentDeployment.imagePullSecret }}
