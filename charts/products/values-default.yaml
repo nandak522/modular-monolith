@@ -218,7 +218,7 @@ deployments:
       maxUnavailable: "20%"
     replicas: 1 # If hpa is defined, defining replicas count here is incorrect. Let hpa totally manage the replicas.
     # terminationGracePeriodSeconds: 60
-    trafficWeightPercentage: "100"
+    trafficWeightPercentage: "1"
   - name: new-products
     # podLabels:
     #   prometheus.app/port: "8080"
@@ -409,5 +409,3 @@ crons:
     timing: "* * * * */5"
   - name: custom-cron-2
     timing: "* * * * */3"
-
-mirror_percent: 0
