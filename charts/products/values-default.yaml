@@ -24,7 +24,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.16
+        imageTag: products-0.1.25
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
@@ -78,7 +78,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.16
+        imageTag: products-0.1.25
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
@@ -132,7 +132,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.16
+        imageTag: products-0.1.25
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
@@ -186,7 +186,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.16
+        imageTag: products-0.1.25
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
@@ -240,7 +240,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.16
+        imageTag: products-0.1.25
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
@@ -294,7 +294,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.16
+        imageTag: products-0.1.25
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
@@ -348,7 +348,7 @@ deployments:
         # externalNodePort: 32758
         # servicePortName: httpport
         imageName: nanda/modular-monolith
-        imageTag: products-0.1.16
+        imageTag: products-0.1.25
         configMapName: config-plain
         configFileName: config-file
         secretName: secrets-plain
