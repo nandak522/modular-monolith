@@ -1,0 +1,26 @@
+{{- $ns := .Release.Namespace -}}
+{{- $rel := .Release.Name -}}
+{{- $chart := .Chart.Name -}}
+
+Thanks for installing {{ $chart }}!
+
+Release: {{ $rel }}
+Namespace: {{ $ns }}
+Chart: {{ $chart }} {{ .Chart.Version }}
+
+To verify the deployment is up:
+  kubectl get pods -n {{ $ns }} -l app.kubernetes.io/instance={{ $rel }},app.kubernetes.io/name={{ $chart }}
+  kubectl rollout status deploy -n {{ $ns }} -l app.kubernetes.io/instance={{ $rel }},app.kubernetes.io/name={{ $chart }}
+
+Common commands:
+  # List all resources for this release
+  kubectl get all -n {{ $ns }} -l app.kubernetes.io/instance={{ $rel }},app.kubernetes.io/name={{ $chart }}
+
+  # Tail logs
+  kubectl logs -n {{ $ns }} -l app.kubernetes.io/instance={{ $rel }},app.kubernetes.io/name={{ $chart }} -f --max-log-requests=5
+
+Upgrade with custom values:
+  helm upgrade {{ $rel }} {{ .Chart.Name }} -n {{ $ns }} -f values-default.yaml
+
+Uninstall:
+  helm uninstall {{ $rel }} -n {{ $ns }}
