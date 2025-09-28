@@ -1,4 +1,4 @@
 server_port: 9090
 app_name: Payments
-log_level: debug
+log_level: info
 enable_server_access_log: true
