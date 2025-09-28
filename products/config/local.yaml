@@ -1,4 +1,4 @@
 server_port: 8080
 app_name: Products
-log_level: debug
+log_level: info
 enable_server_access_log: true
