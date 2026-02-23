@@ -54,22 +54,27 @@ spec:
             - name: K8S_NODE_NAME
               valueFrom:
                 fieldRef:
+                  apiVersion: v1
                   fieldPath: spec.nodeName
             - name: K8S_HOST_IP
               valueFrom:
                 fieldRef:
+                  apiVersion: v1
                   fieldPath: status.hostIP
             - name: K8S_POD_NAME
               valueFrom:
                 fieldRef:
+                  apiVersion: v1
                   fieldPath: metadata.name
             - name: K8S_POD_NAMESPACE
               valueFrom:
                 fieldRef:
+                  apiVersion: v1
                   fieldPath: metadata.namespace
             - name: K8S_POD_IP
               valueFrom:
                 fieldRef:
+                  apiVersion: v1
                   fieldPath: status.podIP
           imagePullPolicy: {{ default "IfNotPresent" .imagePullPolicy }}
           {{- if .readinessProbe }}
