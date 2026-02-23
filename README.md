@@ -16,3 +16,45 @@ This monolithic repo hosts two independent Golang services, `products` and `paym
 - [x] dynamic log level adjustment for each service.
 - [x] auto-merging of main branch to a configurable list of special branches via a Github App
 - [x] stopping the merging of restricted branch to default branch
+
+### Helm commands
+#### To render templates
+```sh
+CONTEXT_PREFIX='kind'
+CLUSTER_NAME='sandbox'
+helm --kube-context "${CONTEXT_PREFIX}-${CLUSTER_NAME}" template -v 5 \
+    --namespace products \
+    --logtostderr \
+    --debug \
+    --values charts/products/values-default.yaml \
+    products \
+    charts/products
+```
+
+#### To install
+```sh
+CONTEXT_PREFIX='kind'
+CLUSTER_NAME='sandbox'
+helm --kube-context "${CONTEXT_PREFIX}-${CLUSTER_NAME}" upgrade \
+    --wait \
+    --create-namespace \
+    --namespace products \
+    --logtostderr \
+    --debug \
+    --install \
+    --timeout 300s \
+    --values charts/products/values-default.yaml \
+    products \
+    charts/products
+```
+
+### To view upcoming changes
+```sh
+CONTEXT_PREFIX='kind'
+CLUSTER_NAME='sandbox'
+helm --kube-context "${CONTEXT_PREFIX}-${CLUSTER_NAME}" template \
+    --namespace products \
+    --values charts/products/values-default.yaml \
+    products \
+    charts/products 2>&1 | KUBECTL_EXTERNAL_DIFF="diff -u --color=always" kubectl --context "${CONTEXT_PREFIX}-${CLUSTER_NAME}" diff --namespace products -f - 2>&1
+```
