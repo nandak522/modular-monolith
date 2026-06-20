@@ -3,7 +3,7 @@ module github.com/nandak522/modular-monolith/products
 go 1.25
 
 require (
-	github.com/go-chi/chi/v5 v5.2.3
+	github.com/go-chi/chi/v5 v5.2.4
 	github.com/nandak522/modular-monolith/shared v0.0.0-20240302164933-316b16cd2aba
 	github.com/spf13/viper v1.21.0
 )
